@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import reset from "styled-reset";
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset';
 
 const GlobalStyle = createGlobalStyle`
     ${reset}
@@ -16,12 +16,13 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body {
-    font-family: "Noto Sans KR", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    line-height: 1.2;
+        @font-face {
+            font-family: 'yg-jalnan';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
     }
 `;
 
 export default GlobalStyle;
-
