@@ -1,64 +1,177 @@
 import { useState, useEffect } from 'react';
+import supabase from '../supabase/supabaseClient';
+import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
 import { IoLogOutOutline } from 'react-icons/io5';
-import supabase from '../supabase/supabaseClient';
+import { toast } from 'react-toastify';
 
 const MyProfilePage = () => {
-  const [userImage, setUserImage] = useState(null);
-  const [defaultImage, setDefaultImage] = useState(null);
-  const [newNickname, setNewNickname] = useState();
-  const [newPassword, setNewPassword] = useState();
+  const [preview, setPreview] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
+  // const [defaultImage, setDefaultImage] = useState(null);
+  const [newNickname, setNewNickname] = useState('');
+  const [currentNickname, setCurrentNickname] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [file, setFile] = useState(null);
 
+  // 디폴트 이미지 ui에 보여주기
   useEffect(() => {
-    const fetchDefaultImage = () => {
-      const { data } = supabase.storage.from('profile_image').getPublicUrl('default.png');
-      // console.log('data', data) // data 라는 객체 안에 publicUrl 키값으로 반환하는 것 확인!
-      // console.log('data.publicUrl', data.publicUrl)
+    // const fetchDefaultImage = () => {
+    //   const { data } = supabase.storage.from('profile_image').getPublicUrl('default.png');
+    // console.log('data', data) // data 라는 객체 안에 publicUrl 키값으로 반환하는 것 확인!
+    // console.log('data.publicUrl', data.publicUrl)
+    //   setDefaultImage(data.publicUrl);
+    // };
 
-      setDefaultImage(data.publicUrl);
+    // 유저 프로필 이미지 가져오기
+    const fetchUserProfileImage = async () => {
+      const userId = '004f4d50-f6c0-45fb-98d0-ca294cc24505';
+      const { data: userProfile, error } = await supabase
+        .from('users')
+        .select('profile_image, nick_name')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        toast.error('유저 정보 로딩 실패!');
+        return;
+      }
+      setProfileImage(userProfile.profile_image);
+      setCurrentNickname(userProfile.nick_name);
+      // if (userProfile.profile_image) {
+      //   const { data, error: imageError } = supabase.storage
+      //     .from('profile_image')
+      //     .getPublicUrl(userProfile.profile_image);
+      //   if (imageError) {
+      //     toast.error("프로필 이미지 로딩 실패!");
+      //     return;
+      //   }
+      //   console.log('data.publicUrl', data.publicUrl)
+      //   console.log('data.publicUrl', typeof data.publicUrl)
+      // }
     };
 
-    fetchDefaultImage();
+    // 데이터 fetch
+    // fetchDefaultImage();
+    fetchUserProfileImage();
   }, []);
 
-  const handleUpload = async (file) => {
-    const profileImageFile = e.target.files[0];
+  // 업로드 할 이미지 미리보기
+  const handleUpload = (e) => {
+    e.preventDefault();
+    const fileObj = e.target.files[0];
+    setFile(fileObj);
+    const ObjectUrl = URL.createObjectURL(fileObj);
+    setPreview(ObjectUrl);
+    // const reader = new FileReader();
+    // reader.readAsDataURL(fileObj);
+    // reader.onloadend = () => {
+    //   // console.log('reader.result', reader.result)
+    //   setUserImage(reader.result);
+    // };
+  };
+
+  const handleImageUpdate = async (e) => {
+    e.preventDefault();
+    if (!file) return toast.warning('업로드할 파일을 선택하세요!');
 
     const { data: imageData, error } = await supabase.storage.from('profile_image').upload(`${uuidv4()}.png`, file);
 
-    console.log('data', data);
-
     if (error) {
-      clonsole.log(error);
+      console.error(error);
+      toast.error('프로필 사진 변경에 실패했습니다.');
       return;
     }
 
-    const { data } = supabase.storage.from('profile_images').getPublicUrl(imageData.path);
+    const { data: publicUrlData } = supabase.storage.from('profile_image').getPublicUrl(imageData.path);
+    const imageUrl = publicUrlData.publicUrl;
 
-    setUserImage(data.publicUrl);
+    // const userId = supabase.auth.user().id;
+    const userId = '004f4d50-f6c0-45fb-98d0-ca294cc24505';
+    const { error: updateError } = await supabase.from('users').update({ profile_image: imageUrl }).eq('id', userId);
+
+    if (updateError) {
+      console.error(updateError);
+      toast.error('프로필 사진 변경에 실패했습니다.');
+    }
+
+    setProfileImage(imageUrl);
+    toast.success('프로필 사진이 변경되었습니다.');
   };
 
-  const handleNicknameChange = async () => {
-    let { data: users, error } = await supabase.from('users').select('nick_name');
+  // 기존 닉네임 불러오기 및 새로운 닉네임 변경 로직
+  const handleNicknameChange = async (e) => {
+    e.preventDefault();
+
+    if (!newNickname || newNickname === currentNickname) {
+      toast.warning('변경할 닉네임을 입력해주세요!');
+      return;
+    }
+
+    const { data: existingNicknames, error: checkError } = await supabase
+      .from('users')
+      .select('nick_name')
+      .eq('nick_name', newNickname);
+
+    if (checkError) {
+      toast.error('닉네임 확인 중 오류가 발생했습니다.');
+      return;
+    }
+
+    if (existingNicknames > 0) {
+      toast.warning('이미 사용 중인 닉네임입니다!');
+      return;
+    }
+
+    const userId = '004f4d50-f6c0-45fb-98d0-ca294cc24505';
+    const { error: updateError } = await supabase.from('users').update({ nick_name: newNickname }).eq('id', userId);
+
+    if (updateError) {
+      toast.error('닉네임 변경에 실패했습니다.');
+      return;
+    }
+
+    setCurrentNickname(newNickname);
+    toast.success('닉네임이 변경되었습니다.');
   };
 
-  const handlePasswordChange = () => {};
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (!newPassword || newPassword.length < 8) {
+      toast.warning('8자 이상의 새로운 비밀번호를 입력하세요!');
+      return;
+    }
 
-  const handleDeleteAccount = () => {};
+    const { error: passwordError } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (passwordError) {
+      toast.error('비밀번호 변경에 실패했습니다.');
+      return;
+    }
+
+    setNewPassword('');
+    toast.success('비밀번호가 변경되었습니다.');
+  };
+
+  const handleDeleteAccount = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <ProfileContainer>
-      <ImageContainer>
+      <ImageContainer onSubmit={handleImageUpdate}>
         <h2>My Profile</h2>
         <StyledLabel htmlFor="profileImage">
-          <img src={userImage || defaultImage} alt="Profile" />
+          <img src={preview || profileImage} alt="Profile" />
         </StyledLabel>
-        <StyledInput id="profileImage" type="file" accept="image/*" onChange={() => handleUpload(file)} />
+        <StyledInput id="profileImage" type="file" accept="image/*" onChange={handleUpload} />
         <ImageButtonGroup>
           <UploadButton as="label" htmlFor="profileImage">
             프로필 사진 업로드
           </UploadButton>
-          <UpdateButton>저장</UpdateButton>
+          <UpdateButton type="submit">저장</UpdateButton>
         </ImageButtonGroup>
       </ImageContainer>
 
@@ -66,9 +179,10 @@ const MyProfilePage = () => {
         <div>
           <input
             type="text"
-            value={newNickname}
+            value={newNickname || currentNickname || ''}
             placeholder="닉네임"
             onChange={(e) => setNewNickname(e.target.value)}
+            onFocus={() => setCurrentNickname('')}
           />
           <NicknameButton onClick={handleNicknameChange}>닉네임 변경</NicknameButton>
         </div>
@@ -108,7 +222,7 @@ const ProfileContainer = styled.div`
   background-color: var(--background--color);
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -146,7 +260,7 @@ const ImageButtonGroup = styled.div`
   display: flex;
   gap: 16px;
   align-items: center;
-`
+`;
 
 const UploadButton = styled.button`
   font-family: 'yg-jalnan', sans-serif;
@@ -155,7 +269,7 @@ const UploadButton = styled.button`
   border: none;
   border-radius: 10px;
   color: white;
-  padding: 13.3px 20px;
+  padding: 15px 20px;
   margin-bottom: 20px;
 
   &:hover {
@@ -165,9 +279,9 @@ const UploadButton = styled.button`
 
 const UpdateButton = styled(UploadButton)`
   padding: 10px 20px;
-`
+`;
 
-const InputGroup = styled.div`
+const InputGroup = styled.form`
   margin-top: 28px;
   display: flex;
   flex-direction: column;
@@ -196,7 +310,7 @@ const NicknameButton = styled.button`
   border: none;
   border-radius: 10px;
   color: white;
-  padding: 0 32px;
+  padding: 0 30px;
 
   &:hover {
     cursor: pointer;
@@ -204,7 +318,7 @@ const NicknameButton = styled.button`
 `;
 
 const PasswordButton = styled(NicknameButton)`
-  padding: 0 25px;
+  padding: 0 23px;
 `;
 
 const DeleteButton = styled.button`
