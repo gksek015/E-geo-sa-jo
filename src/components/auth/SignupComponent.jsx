@@ -1,18 +1,62 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import supabase from '../../supabase/supabaseClient';
+
 
 const SignupComponent = () => {
-  const [nickname, setNickname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    nickname: "",
+  });
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    console.log('Nickname:', nickname);
-    console.log('Email:', email);
-    console.log('Password:', password);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const {name, value} = e.target;
+    setFormData({...formData, [name]: value});
   };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    const {email, password, confirmPassword, nickname} = formData;
+
+    if (password !== confirmPassword) {
+      toast.error("비밀번호가 일치하지 않습니다.")
+      return;
+    }
+
+    try {
+      const {data, error} = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {nick_name: nickname}
+        }
+      })
+      if(error) {
+        toast.error("회원가입에 실패했습니다.");
+        return;
+      }
+
+      await supabase.from("users").insert({
+        id: data.user?.id,
+        email: data.user?.email,
+        nick_name: nickname,
+      });
+
+      toast.success("회원가입이 완료되었습니다");
+      
+      await supabase.auth.signOut();
+      navigate("/");
+    } catch (error) {
+      toast.error("알 수 없는 오류가 발생했습니다. 다시 시도해주세요.")
+    }
+  }
 
   return (
     <Background>
@@ -23,15 +67,38 @@ const SignupComponent = () => {
           alt="Logo" />
         </Logo>
         <form onSubmit={handleSignup}>
-          <Input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input
+          type="email"
+          name="email"
+          placeholder="이메일"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          />
           <Input
             type="password"
+            name="password"
             placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
+            required
           />
-          <Input type='password' placeholder='비밀번호 확인'/>
-          <Input type="text" placeholder="닉네임" value={nickname} onChange={(e) => setNickname(e.target.value)} />
+          <Input
+          type="password"
+          name="confirmPassword"
+          placeholder="비밀번호 확인"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+          />
+          <Input
+          type="text"
+          name="nickname"
+          placeholder="닉네임"
+          value={formData.nickname}
+          onChange={handleChange}
+          required
+          />
           <ButtonGroup> 
             <Button type="submit">회원가입</Button>
             <LinkButton to="/">뒤로가기</LinkButton>
