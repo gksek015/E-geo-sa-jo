@@ -5,23 +5,27 @@ const GlobalStyle = createGlobalStyle`
     ${reset}
 
     :root {
-      //색상,폰트 정의하기
-      --green--color: #008000;
-      --red--color: #FF0000;
-      --border--color: #d3d3d3;
-  }
+      --button--color: #DDB25C;
+      --font--primary--color: #B47B46;
+      --font--secondary--color: #666666;
+      --background--color: #FFE7B8;
+    }
 
     * {
-    box-sizing: border-box;
+        box-sizing: border-box;
+    } 
+
+    @font-face {
+        font-family: 'yg-jalnan';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
     }
 
     body {
-        @font-face {
-            font-family: 'yg-jalnan';
-            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
+        font-family: 'yg-jalnan', sans-serif;
+        margin: 0;
+        padding: 0;
     }
 `;
 
