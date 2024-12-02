@@ -4,95 +4,89 @@ import HeroSession from '../components/home/HeroSession';
 import { IoMdSearch } from 'react-icons/io';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState();
-  // const [info, setInfo] = useState();
-  // const [markers, setMarkers] = useState([]);
-  // const [map, setMap] = useState();
+  const [info, setInfo] = useState();
+  const [markers, setMarkers] = useState([]);
+  const [map, setMap] = useState();
+  const [isSearchTerm, setIsSearchTerm] = useState(false);
 
+  const [state, setState] = useState({
+    center: {
+      lat: 33.450701,
+      lng: 126.570667
+    },
+    errMsg: null,
+    isLoading: true
+  });
+
+  // 검색 기능을 위한 핸들러
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchTerm.Trim()) {
-      console.log(`${searchTerm}`);
+    if (searchTerm.trim()) {
+      const place = new kakao.maps.services.Places();
+
+      // 장소 키워드 검색
+      place.keywordSearch(searchTerm, (data, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          const bounds = new kakao.maps.LatLngBounds();
+          const newMarkers = data.map((location) => {
+            bounds.extend(new kakao.maps.LatLng(location.y, location.x));
+            return {
+              position: {
+                lat: parseFloat(location.y),
+                lng: parseFloat(location.x)
+              },
+              content: location.place_name
+            };
+          });
+          setMarkers(newMarkers); //검색한 결과를 마커로 나타나게 설정
+          setInfo(null); // 이전에 있던 정보를 초기화
+          map.setBounds(bounds); // 지도 범위
+          setIsSearchTerm(true);
+        } else {
+          toast.error('검색결과가 없습니다.');
+          setIsSearchTerm(false);
+        }
+      });
     } else {
       toast.error('검색어를 입력하세요.');
     }
   };
 
-  // // 현재 내 위치를 지도에 찍기 위한 geolocation 로직
-  // const [state, setState] = useState({
-  //   center: {
-  //     lat: 33.450701,
-  //     lng: 126.570667
-  //   },
-  //   errMsg: null,
-  //   isLoading: true
-  // });
+  // 현재 내 위치를 보여주는 geolocation
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setState((prev) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            },
+            isLoading: false
+          }));
+        },
+        (err) => {
+          setState((prev) => ({
+            ...prev,
+            errMsg: err.message,
+            isLoading: false
+          }));
+        }
+      );
+    } else {
+      setState((prev) => ({
+        ...prev,
+        errMsg: 'geolocation을 사용할 수 없습니다.',
+        isLoading: false
+      }));
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         setState((prev) => ({
-  //           ...prev,
-  //           center: {
-  //             lat: position.coords.latitude, // 위도
-  //             lng: position.coords.longitude // 경도
-  //           },
-  //           isLoading: false
-  //         }));
-  //       },
-  //       (err) => {
-  //         setState((prev) => ({
-  //           ...prev,
-  //           errMsg: err.message,
-  //           isLoading: false
-  //         }));
-  //       }
-  //     );
-  //   } else {
-  //     // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-  //     setState((prev) => ({
-  //       ...prev,
-  //       errMsg: 'geolocation을 사용할수 없어요..',
-  //       isLoading: false
-  //     }));
-  //   }
-  // }, []);
-
-  // // 키워드를 검색했을 때 맵에서 표현하기 위한 로직
-  // useEffect(() => {
-  //   if (!map) return;
-  //   const ps = new kakao.maps.services.Places();
-
-  //   ps.keywordSearch('붕어빵', (data, status, _pagination) => {
-  //     if (status === kakao.maps.services.Status.OK) {
-  //       // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-  //       // LatLngBounds 객체에 좌표를 추가합니다
-  //       const bounds = new kakao.maps.LatLngBounds();
-  //       let markers = [];
-
-  //       for (var i = 0; i < data.length; i++) {
-  //         // @ts-ignore
-  //         markers.push({
-  //           position: {
-  //             lat: data[i].y,
-  //             lng: data[i].x
-  //           },
-  //           content: data[i].place_name
-  //         });
-  //         // @ts-ignore
-  //         bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-  //       }
-  //       setMarkers(markers);
-
-  //       // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-  //       map.setBounds(bounds);
-  //     }
-  //   });
-  // }, [map]);
   return (
     <>
       {/* HeroSession  */}
@@ -109,27 +103,28 @@ const HomePage = () => {
           <SearchInput
             type="search"
             placeholder="장소를 입력해 주세요"
-            value={searchTerm}
+            value={searchTerm ?? ''}
             onChange={(e) => setSearchTerm(e.target.value)}
-          ></SearchInput>
+          />
           <SearchButton type="submit">검색하기</SearchButton>
         </SearchForm>
       </SearchContainer>
 
-      {/* <>
+      <MapContainer>
+        <MapTitle>현재 내 위치는 어디일까요?</MapTitle>
         <Map // 지도를 표시할 Container
           center={state.center}
           style={{
             // 지도의 크기
-            width: '100%',
+            width: '1280px',
             height: '450px'
           }}
           level={2} // 지도의 확대 레벨
           onCreate={setMap}
         >
-          {!state.isLoading && (
+          {!state.isLoading && !isSearchTerm && (
             <MapMarker position={state.center}>
-              <div style={{ padding: '5px', color: '#000' }}>{state.errMsg ? state.errMsg : '여기에 계신가요?!'}</div>
+              <div style={{ padding: '5px', color: '#000' }}>{state.errMsg || '현재위치'}</div>
             </MapMarker>
           )}
 
@@ -143,7 +138,7 @@ const HomePage = () => {
             </MapMarker>
           ))}
         </Map>
-      </> */}
+      </MapContainer>
     </>
   );
 };
@@ -212,4 +207,18 @@ const SearchButton = styled.button`
   &:hover {
     background-color: #b98e38;
   }
+`;
+
+const MapContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const MapTitle = styled.p`
+  font-size: 28px;
+  text-align: center;
+  color: var(--font--primary--color);
+  margin: 20px;
 `;

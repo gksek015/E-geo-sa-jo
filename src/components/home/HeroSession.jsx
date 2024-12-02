@@ -41,21 +41,22 @@ const HeroContainer = styled.div`
   width: 1400px;
   background-color: #fbfbf9;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 `;
 
 const HeroContent = styled.div`
   margin: 30px;
 `;
 
-const HeroText = styled.h1`
+const TextContainer = styled.div`
+  margin-bottom: 20px;
+`;
+
+const HeroText = styled.p`
   font-size: 36px;
   margin-bottom: 10px;
   padding: 5px;
   color: var(--font--primary--color);
-`;
-
-const TextContainer = styled.p`
-  margin-bottom: 20px;
 `;
 
 const ButtonContainer = styled.div`
