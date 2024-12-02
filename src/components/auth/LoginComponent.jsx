@@ -139,7 +139,6 @@ const LoginComponent = () => {
     console.log(email, password);
   };
 
-
   return (
     <Background>
       <Container>

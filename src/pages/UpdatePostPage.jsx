@@ -1,8 +1,8 @@
-import React from 'react';
-import PostUpdateDelete from '../components/layout/PostUpdateDelete';
+// import React from 'react';
+// import PostUpdateDelete from '../components/layout/PostUpdateDelete';
 
-const UpdatePostPage = () => {
-  return <PostUpdateDelete />;
-};
+// const UpdatePostPage = () => {
+//   return <PostUpdateDelete />;
+// };
 
-export default UpdatePostPage;
+// export default UpdatePostPage;
