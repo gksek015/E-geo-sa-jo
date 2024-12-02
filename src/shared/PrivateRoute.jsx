@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../supabaseClient";
-import useAuthStore from "../store/useAuthStore";
+import supabase from "../supabase/supabaseClient";
+import useAuthStore from "../zustand/useAuthStore";
 
 const fetchUserData = async () => {
   const { data: { user } } = await supabase.auth.getUser();
@@ -11,15 +11,17 @@ const fetchUserData = async () => {
     .eq("id", user.id)
     .single();
 
-  return data; 
+  return data;
 };
 
 const PrivateRoute = () => {
   const { user, setUser } = useAuthStore();
 
-  const { isLoading } = useQuery(["userData"], fetchUserData, {
+  const { isLoading } = useQuery({
+    queryKey: ["userData"],
+    queryFn: fetchUserData,
     onSuccess: (fetchedUser) => {
-      setUser(fetchedUser); 
+      setUser(fetchedUser);
     },
   });
 

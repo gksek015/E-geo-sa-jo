@@ -1,5 +1,8 @@
-const UpdatePostPage = () => {
-  return <div>UpdatePostPage</div>;
-};
+// import React from 'react';
+// import PostUpdateDelete from '../components/layout/PostUpdateDelete';
 
-export default UpdatePostPage;
+// const UpdatePostPage = () => {
+//   return <PostUpdateDelete />;
+// };
+
+// export default UpdatePostPage;

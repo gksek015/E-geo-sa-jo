@@ -1,5 +1,5 @@
 const PostPage = () => {
-  return <div>PostPage</div>;
-};
+    return <div>PostPage</div>;
+  };
 
-export default PostPage;
+  export default PostPage;
