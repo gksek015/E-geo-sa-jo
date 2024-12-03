@@ -14,6 +14,17 @@ export const fetchPost = async () => {
   return data; // 성공적으로 가져온 데이터 반환
 };
 
+export const fetchMap = async () => {
+  const { data, error } = await supabase.from('stores').select('location').eq('id', storeId).single();
+
+  if (error) {
+    console.error('Supabase 데이터 가져오기 실패:', error);
+    throw error;
+  }
+
+  return data; // 성공적으로 가져온 데이터 반환
+};
+
 // 데이터 삭제 함수
 export const deletePost = async () => {
   const { error } = await supabase.from('stores').delete().eq('id', storeId);
