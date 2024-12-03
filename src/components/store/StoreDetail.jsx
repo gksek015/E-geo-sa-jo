@@ -1,25 +1,31 @@
 import styled from 'styled-components';
 
 const StoreDetail = ({ store }) => {
-  const handleStoreUpdata = (e) => {
+  // const { tsetId, id } = useStoreData();
+
+  const handleShowMap = (e, location) => {
     e.preventDefault();
-    console.log('수정하기 ');
+    console.log(location);
+    const locationObj = JSON.parse(location);
+    // navigate(`https://map.kakao.com/link/map/37.402056,127.108212`); 싱글페이지 url
+    window.open(`https://map.kakao.com/link/map/${locationObj.lat},${locationObj.lng}`, '_blank');
+    console.log(`https://map.kakao.com/link/map/${locationObj.lat},${locationObj.lng}`);
   };
+
   return (
     <>
-      <UpdataButton onClick={handleStoreUpdata}>수정하기</UpdataButton>
       <InputGroup>
         <p>{store.name}</p>
       </InputGroup>
       <AddressSection>
         <p>{store.map_address}</p>
-        <Button>지도보기</Button>
+        <Button onClick={(e) => handleShowMap(e, store.location)}>지도보기</Button>
       </AddressSection>
       <InputGroup>
         <p>{store.category}</p>
       </InputGroup>
       <DescriptionArea>{store.description}</DescriptionArea>
-      <Button>돌아가기</Button>
+      <Button onClick={() => navigate(-1)}>돌아가기</Button>
     </>
   );
 };
