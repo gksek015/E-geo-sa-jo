@@ -1,10 +1,9 @@
-import React from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { addPost } from '../../api/postApi';
+import React, { useEffect } from 'react';
 import { usePostStore } from '../../zustand/usePostStore';
 import PostMap from './PostMap';
 import supabase from '../../supabase/supabaseClient';
 import styled from 'styled-components';
+import { getId } from '../../api/auth';
 
 const Wrapper = styled.div`
   display: flex;
@@ -110,19 +109,22 @@ const MapWrapper = styled.div`
 const PostForm = () => {
   const { formData, setFormData, resetForm } = usePostStore();
 
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = await getId();
+      if (userId) {
+        setFormData('user_id', userId);
+      }
+    };
+
+    fetchUserId();
+  }, [setFormData]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 임시 user_id 설정
-    const tempUserId = '004f4d50-f6c0-45fb-98d0-ca294cc24505'; // SQL에서 추가한 임시 user_id
-
-    const formDataWithUserId = {
-      ...formData,
-      user_id: tempUserId // user_id 추가
-    };
-
     try {
-      const { error } = await supabase.from('stores').insert([formDataWithUserId]);
+      const { error } = await supabase.from('stores').insert([formData]);
       if (error) {
         console.error('Supabase 데이터 추가 실패:', error);
         alert('삽입 실패: ' + error.message);
