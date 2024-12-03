@@ -4,35 +4,28 @@ import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const MyProfilePage = () => {
   const [preview, setPreview] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  // const [defaultImage, setDefaultImage] = useState(null);
   const [newNickname, setNewNickname] = useState('');
   const [currentNickname, setCurrentNickname] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [file, setFile] = useState(null);
 
-  // 디폴트 이미지 ui에 보여주기
-  useEffect(() => {
-    // const fetchDefaultImage = () => {
-    //   const { data } = supabase.storage.from('profile_image').getPublicUrl('default.png');
-    // console.log('data', data) // data 라는 객체 안에 publicUrl 키값으로 반환하는 것 확인!
-    // console.log('data.publicUrl', data.publicUrl)
-    //   setDefaultImage(data.publicUrl);
-    // };
+  const navigate = useNavigate();
 
+  useEffect(() => {
     // 유저 프로필 이미지 가져오기
     const fetchUserProfileImage = async () => {
-      
       const {
         data: { user },
-        error: userError,
+        error: userError
       } = await supabase.auth.getUser();
 
       const userId = user.id;
-  
+
       if (userError || !user) {
         toast.error('로그인 상태를 확인하세요!');
         return;
@@ -50,21 +43,8 @@ const MyProfilePage = () => {
       }
       setProfileImage(userProfile.profile_image);
       setCurrentNickname(userProfile.nick_name);
-      // if (userProfile.profile_image) {
-      //   const { data, error: imageError } = supabase.storage
-      //     .from('profile_image')
-      //     .getPublicUrl(userProfile.profile_image);
-      //   if (imageError) {
-      //     toast.error("프로필 이미지 로딩 실패!");
-      //     return;
-      //   }
-      //   console.log('data.publicUrl', data.publicUrl)
-      //   console.log('data.publicUrl', typeof data.publicUrl)
-      // }
     };
 
-    // 데이터 fetch
-    // fetchDefaultImage();
     fetchUserProfileImage();
   }, []);
 
@@ -75,12 +55,6 @@ const MyProfilePage = () => {
     setFile(fileObj);
     const ObjectUrl = URL.createObjectURL(fileObj);
     setPreview(ObjectUrl);
-    // const reader = new FileReader();
-    // reader.readAsDataURL(fileObj);
-    // reader.onloadend = () => {
-    //   // console.log('reader.result', reader.result)
-    //   setUserImage(reader.result);
-    // };
   };
 
   const handleImageUpdate = async (e) => {
@@ -89,9 +63,9 @@ const MyProfilePage = () => {
 
     const {
       data: { user },
-      error: userError,
+      error: userError
     } = await supabase.auth.getUser();
-  
+
     if (userError || !user) {
       toast.error('로그인 상태를 확인하세요!');
       return;
@@ -145,9 +119,9 @@ const MyProfilePage = () => {
 
     const {
       data: { user },
-      error: userError,
+      error: userError
     } = await supabase.auth.getUser();
-  
+
     if (userError || !user) {
       toast.error('로그인 상태를 확인하세요!');
       return;
@@ -163,7 +137,6 @@ const MyProfilePage = () => {
     setCurrentNickname(newNickname);
     toast.success('닉네임이 변경되었습니다.');
   };
-
 
   // 비밀번호 변경 로직
   const handlePasswordChange = async (e) => {
@@ -186,10 +159,29 @@ const MyProfilePage = () => {
     toast.success('비밀번호가 변경되었습니다.');
   };
 
-  const handleDeleteAccount = (e) => {
-    e.preventDefault();
-    
+  // 계정삭제 기능 로직
+  const handelDeleteAccount = async () => {
 
+    const {
+      data: { user },
+      error: userError
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      toast.error('로그인 상태를 확인하세요!');
+      return;
+    }
+
+    const user_id = user.id;
+    await supabase.auth.signOut();
+
+    const { error } = await supabase.rpc('delete_user', { user_id });
+    if (error) {
+      toast.error('에러가 발생했습니다!')
+    }
+    toast.success('계정이 삭제되었습니다.')
+
+    navigate('/');
   };
 
   return (
@@ -229,7 +221,7 @@ const MyProfilePage = () => {
           <PasswordButton onClick={handlePasswordChange}>비밀번호 변경</PasswordButton>
         </div>
       </InputGroup>
-      <DeleteButton type="button" onClick={handleDeleteAccount}>
+      <DeleteButton type="button" onClick={handelDeleteAccount}>
         <IoLogOutOutline />
         계정 삭제
       </DeleteButton>

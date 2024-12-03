@@ -1,8 +1,10 @@
-import { supabase } from '../supabase/supabaseClient';
+import supabase from '../supabase/supabaseClient';
+
+const storeId = '49aea70d-a279-4717-a328-529adf49d39b';
 
 //데이터 정보 가져오기
-export const fetchPost = async (storeId) => {
-  const { data, error } = await supabase.from('stores').select('id').eq('id', storeId).single();
+export const fetchPost = async () => {
+  const { data, error } = await supabase.from('stores').select('*').eq('id', storeId).single();
 
   if (error) {
     console.error('Supabase 데이터 가져오기 실패:', error);
@@ -13,7 +15,7 @@ export const fetchPost = async (storeId) => {
 };
 
 // 데이터 삭제 함수
-export const deletePost = async (storeId) => {
+export const deletePost = async () => {
   const { error } = await supabase.from('stores').delete().eq('id', storeId);
 
   if (error) {
@@ -23,8 +25,8 @@ export const deletePost = async (storeId) => {
 };
 
 //데이터 수정 함수
-export const updatePost = async (storeId, formData) => {
-  const { data, error } = await supabase.from('stores').update(formData).eq('id', storeId);
+export const updatePost = async (formData) => {
+  const { data, error } = await supabase.from('stores').update(formData).eq('id', storeId).select();
 
   if (error) {
     console.error('Supabase 데이터 업데이트 실패:', error);

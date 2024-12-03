@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { addPost } from '../../api/postApi';
 import { usePostStore } from '../../zustand/usePostStore';
 import PostMap from './PostMap';
-import { supabase } from '../../supabase/supabaseClient';
+import supabase from '../../supabase/supabaseClient';
 
 const PostForm = () => {
   const { formData, setFormData, resetForm } = usePostStore();
