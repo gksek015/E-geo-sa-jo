@@ -1,12 +1,16 @@
-import React from 'react'
-import PostForm from '../components/layout/PostForm'
+import React from 'react';
+import PostForm from '../components/posting/PostForm';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 
 const PostPage = () => {
   return (
     <div>
-      <PostForm />
+      <Header />
+        <PostForm />
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default PostPage
+export default PostPage;
