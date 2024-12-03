@@ -22,27 +22,34 @@ const SignupComponent = () => {
   const navigate = useNavigate();
 
   const validateField = (name, value) => {
-    let error = '';
+    let error = "";
     switch (name) {
-      case 'email':
-        const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailValidation.test(value)) {
-          error = '올바른 이메일 주소를 입력해주세요.';
+      case "email":
+        if (!value) {
+          error = "";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          error = "올바른 이메일 주소를 입력해주세요.";
         }
         break;
-      case 'password':
-        if (value.length < 8) {
-          error = '비밀번호는 최소 8자 이상이어야 합니다.';
+      case "password":
+        if (!value) {
+          error = "";
+        } else if (value.length < 8) {
+          error = "비밀번호는 최소 8자 이상이어야 합니다.";
         }
         break;
-      case 'confirmPassword':
-        if (value !== formData.password) {
-          error = '비밀번호가 일치하지 않습니다.';
+      case "confirmPassword":
+        if (!value) {
+          error = "";
+        } else if (value !== formData.password) {
+          error = "비밀번호가 일치하지 않습니다.";
         }
         break;
-      case 'nickname':
-        if (value.trim() === '') {
-          error = '닉네임을 입력해주세요.';
+      case "nickname":
+        if (!value.trim()) {
+          error = "";
+        } else if (value.trim() === "") {
+          error = "닉네임을 입력해주세요.";
         }
         break;
       default:
@@ -92,7 +99,7 @@ const SignupComponent = () => {
             alt="Logo"
           />
         </Logo>
-        <form onSubmit={handleSignup}>
+        <Form onSubmit={handleSignup}>
           <Input
             type="email"
             name="email"
@@ -101,7 +108,7 @@ const SignupComponent = () => {
             onChange={handleChange}
             required
           />
-          {errors.email && <span>{errors.email}</span>}
+          {errors.email && <Span>{errors.email}</Span>}
           <Input
             type="password"
             name="password"
@@ -110,7 +117,7 @@ const SignupComponent = () => {
             onChange={handleChange}
             required
           />
-          {errors.password && <span>{errors.password}</span>}
+          {errors.password && <Span>{errors.password}</Span>}
           <Input
             type="password"
             name="confirmPassword"
@@ -119,7 +126,7 @@ const SignupComponent = () => {
             onChange={handleChange}
             required
           />
-          {errors.confirmPassword && <span>{errors.confirmPassword}</span>}
+          {errors.confirmPassword && <Span>{errors.confirmPassword}</Span>}
           <Input
             type="text"
             name="nickname"
@@ -128,12 +135,12 @@ const SignupComponent = () => {
             onChange={handleChange}
             required
           />
-          {errors.nickname && <span>{errors.nickname}</span>}
+          {errors.nickname && <Span>{errors.nickname}</Span>}
           <ButtonGroup>
             <LinkButton to="/">뒤로가기</LinkButton>
             <Button type="submit">회원가입</Button>
           </ButtonGroup>
-        </form>
+        </Form>
       </Container>
     </Background>
   );
@@ -180,6 +187,12 @@ const Title = styled.h1`
   margin-bottom: 10px;
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
 const Input = styled.input`
   display: block;
   width: 267px;
@@ -189,7 +202,7 @@ const Input = styled.input`
   font-size: 14px;
   font-family: inherit;
   color: var(--font--secondary--color);
-  margin: 0 auto 20px;
+  margin: 0 auto 10px;
 
   &::placeholder {
     color: var(--font--secondary--color);
@@ -234,3 +247,12 @@ const ButtonGroup = styled.div`
   justify-content: space-between;
   gap: 35px;
 `;
+
+
+const Span = styled.span`
+  font-size: 11px;
+  color: #E74646;
+  display: flex;
+  width: 260px;
+  margin-bottom: 20px;
+`

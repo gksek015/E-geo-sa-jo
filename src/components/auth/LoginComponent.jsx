@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
@@ -17,24 +17,18 @@ const LoginComponent = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (formData.email) {
-      validateEmail(formData.email);
-    }
-    if (formData.password) {
-      validatePassword(formData.password);
-    }
-  }, [formData.email, formData.password]);
-
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormData({...formData, [name]: value});
+
+    if (name === "email") validateEmail(value);
+    if (name === "password") validatePassword(value);
   };
 
   const validateEmail = (email) => {
     const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "이메일을 입력해주세요." }));
+    if (email === "") {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
     } else if (!emailValidation.test(email)) {
       setErrors((prevErrors) => ({ ...prevErrors, email: "올바른 이메일 형식이 아닙니다." }));
     } else {
@@ -43,7 +37,9 @@ const LoginComponent = () => {
   };
 
   const validatePassword = (password) => {
-    if (password && password.length < 8) {
+    if (password === "") {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+    } else if (password.length < 8) {
       setErrors((prevErrors) => ({ ...prevErrors, password: "비밀번호는 8자 이상이어야 합니다." }));
     } else {
       setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
@@ -78,7 +74,7 @@ const LoginComponent = () => {
             alt=""
           />
         </Logo>
-        <form onSubmit={handleLogin}>
+        <Form onSubmit={handleLogin}>
           <Input
           type="email"
           name="email"
@@ -87,7 +83,7 @@ const LoginComponent = () => {
           onChange={handleChange}
           required
           />
-          {errors.email && <span>{errors.email}</span>}
+          {errors.email && <Span>{errors.email}</Span>}
           <Input
             type="password"
             name="password"
@@ -96,12 +92,12 @@ const LoginComponent = () => {
             onChange={handleChange}
             required
           />
-          {errors.password && <span>{errors.password}</span>}
+          {errors.password && <Span>{errors.password}</Span>}
           <ButtonGroup>
             <Button type="submit">로그인</Button>
             <LinkButton to="/signup">회원가입</LinkButton>
           </ButtonGroup>
-        </form>
+        </Form>
       </Container>
     </Background>
   );
@@ -148,6 +144,12 @@ const Title = styled.h1`
   margin-bottom: 10px;
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
 const Input = styled.input`
   display: block;
   width: 267px;
@@ -157,7 +159,7 @@ const Input = styled.input`
   font-size: 14px;
   font-family: inherit;
   color: var(--font--secondary--color);
-  margin: 0 auto 20px;
+  margin: 0 auto 10px;
 
   &::placeholder {
     color: var(--font--secondary--color);
@@ -203,4 +205,10 @@ const ButtonGroup = styled.div`
   gap: 35px;
 `;
 
-
+const Span = styled.span`
+  font-size: 11px;
+  color: #E74646;
+  display: flex;
+  width: 260px;
+  margin-bottom: 20px;
+`
