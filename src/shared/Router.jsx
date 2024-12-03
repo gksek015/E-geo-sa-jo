@@ -13,6 +13,7 @@ import DetailPage from '../pages/DetailPage';
 import ListPage from '../pages/ListPage';
 import Layout from '../components/layout/Layout';
 
+
 const Router = () => {
   return (
     <BrowserRouter>

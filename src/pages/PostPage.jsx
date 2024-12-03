@@ -1,7 +1,12 @@
-import PostForm from "../components/layout/PostForm";
+import React from 'react'
+import PostForm from '../components/layout/PostForm'
 
 const PostPage = () => {
-    return <PostForm></PostForm>;
-  };
+  return (
+    <div>
+      <PostForm />
+    </div>
+  )
+}
 
-  export default PostPage;
+export default PostPage
