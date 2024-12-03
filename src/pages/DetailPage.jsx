@@ -1,10 +1,12 @@
 import styled from 'styled-components';
-import { useState } from 'react';
 import CommentForm from '../components/comment/commentForm';
 import CommentList from '../components/comment/CommentList';
 import StoreInfo from '../components/store/StoreInfo';
+import useLikesData from '../hooks/useLikesData';
 
 const DetailPage = () => {
+  const { likes, isLiked, handleLike } = useLikesData();
+
   return (
     <StoreDetailContainer>
       <StoreCard>
@@ -29,8 +31,8 @@ const DetailPage = () => {
                 <span>1</span>
               </div>
               <div className="interaction">
-                <ActionButton>❤️</ActionButton>
-                <span>5</span>
+                <ActionButton onClick={handleLike}>{isLiked ? '❤️' : '🤍'}</ActionButton>
+                <span>{likes}</span>
               </div>
             </InteractionContainer>
           </CommentContainer>
@@ -80,11 +82,12 @@ const StoreCommentContainer = styled.div`
 
 const CommentContainer = styled.div`
   width: 450px;
+  height: 350px;
   display: flex;
   gap: 20px;
   margin: 20px 30px;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   flex-direction: column;
 

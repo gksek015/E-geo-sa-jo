@@ -1,21 +1,45 @@
 import styled from 'styled-components';
+import useCommentsData from '../../hooks/useCommentsData';
+import { toast } from 'react-toastify';
+import useAuthStore from '../../zustand/useAuthStore';
+import { useCommentStore } from '../../zustand/useCommentStore';
+import { useEffect } from 'react';
 
 function CommentList() {
+  const { fetchCommentsData, commentData, deleteComment } = useCommentStore();
+  const { user } = useAuthStore();
+  console.log(user);
+
+  useEffect(() => {
+    fetchCommentsData();
+  }, []);
+
+  const handleEdit = (comment) => {};
+
+  const handleDelete = (commentId) => {
+    console.log(commentId);
+    if (toast.success('댓글이 삭제되었습니다.')) {
+      deleteComment(commentId);
+    }
+  };
+
   return (
     <>
-      <ChatBox>
-        <MessageHeader>
-          <ProfileImage />
-          <Username>닉네임</Username>
-        </MessageHeader>
-        <ChatMessage>
-          <MessageContent></MessageContent>
-        </ChatMessage>
-        <MessageActions>
-          <ActionButton>✏️</ActionButton>
-          <ActionButton>🗑️</ActionButton>
-        </MessageActions>
-      </ChatBox>
+      {commentData.map((comment) => (
+        <ChatBox key={comment.id}>
+          <MessageHeader>
+            <ProfileImage />
+            <Username>{comment.user_nick_name}</Username>
+          </MessageHeader>
+          <ChatMessage>
+            <MessageContent>{comment.content}</MessageContent>
+          </ChatMessage>
+          <MessageActions>
+            <ActionButton onClick={() => handleEdit(comment)}>✏️</ActionButton>
+            <ActionButton onClick={() => handleDelete(comment.id)}>🗑️</ActionButton>
+          </MessageActions>
+        </ChatBox>
+      ))}
     </>
   );
 }
