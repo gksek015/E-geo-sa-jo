@@ -1,18 +1,17 @@
 import { Outlet } from 'react-router-dom';
-import styled from 'styled-components';
 import Header from './Header';
 import Footer from './Footer';
-
+import styled from 'styled-components';
 
 const Layout = () => {
   return (
-    <>
+    <LayoutContainer>
       <Header />
-      <LayoutContainer>
+      <Content>
         <Outlet />
-      </LayoutContainer>
+      </Content>
       <Footer />
-    </>
+    </LayoutContainer>
   );
 };
 
@@ -21,9 +20,11 @@ export default Layout;
 const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 1200px;
-  padding: 70px 20px;
+  min-height: 100vh;
+  background-color: #f9f9f9; 
+`;
+
+const Content = styled.main`
+  flex: 1; 
+  padding: 20px;
 `;

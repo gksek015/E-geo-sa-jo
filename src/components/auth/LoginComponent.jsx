@@ -1,144 +1,68 @@
-// import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
-// import styled from 'styled-components';
-
-// const LoginComponent = () => {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassWord] = useState('');
-
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-//     console.log(email, password);
-//   };
-
-//   return (
-//     <Background>
-//       <Container>
-//         <Title>Login</Title>
-//         <Logo>#</Logo>
-//         <form onSubmit={handleLogin}>
-//           <Input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
-//           <Input
-//             type="password"
-//             placeholder="비밀번호"
-//             value={password}
-//             onChange={(e) => setPassWord(e.target.value)}
-//           />
-//           <ButtonGroup>
-//             <Button type="submit">로그인</Button>
-//             <LinkButton to="/signup">회원가입</LinkButton>
-//           </ButtonGroup>
-//         </form>
-//       </Container>
-//     </Background>
-//   );
-// };
-
-// export default LoginComponent;
-
-// const Background = styled.div`
-//   width: 100vw;
-//   height: 100vh;
-//   background-color: var(--background--color);
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
-// const Container = styled.div`
-//   width: 100%;
-//   max-width: 700px;
-//   padding: 32px;
-//   background-color: #fff;
-//   border-radius: 10px;
-//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-//   text-align: center;
-// `;
-
-// const Logo = styled.div`
-//   font-size: 48px;
-//   margin-bottom: 16px;
-//   color: var(--font--primary--color);
-// `;
-
-// const Title = styled.h1`
-//   font-size: 32px;
-//   color: var(--font--primary--color);
-//   margin-bottom: 32px;
-// `;
-
-// const Input = styled.input`
-//   width: 100%;
-//   padding: 8px;
-//   border: 1px solid var(--font--secondary--color);
-//   border-radius: 5px;
-//   font-size: 14px;
-//   color: var(--font--secondary--color);
-//   margin-bottom: 16px;
-
-//   &::placeholder {
-//     color: var(--font--secondary--color);
-//   }
-// `;
-
-// const Button = styled.button`
-//   width: 48%;
-//   padding: 8px;
-//   margin: 8px 0.5%;
-//   background-color: var(--button--color);
-//   color: #fff;
-//   font-size: 14px;
-//   border: none;
-//   border-radius: 5px;
-//   cursor: pointer;
-
-//   &:hover {
-//     background-color: transparent;
-//     color: var(--button--color);
-//     border: 1px solid var(--button--color);
-//     margin: 7px 0.5%;
-//   }
-// `;
-
-// const LinkButton = styled(Link)`
-//   width: 48%;
-//   padding: 8px;
-//   margin: 8px 0.5%;
-//   background-color: #fff;
-//   color: var(--button--color);
-//   font-size: 14px;
-//   text-align: center;
-//   border: 1px solid var(--button--color);
-//   border-radius: 5px;
-//   cursor: pointer;
-//   text-decoration: none;
-//   transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-
-//   &:hover {
-//     background-color: var(--button--color);
-//     color: #fff;
-//   }
-// `;
-
-// const ButtonGroup = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   gap: 8px;
-// `;
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
+import { login } from '../../api/authApi';
 
 const LoginComponent = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    console.log(email, password);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const {name, value} = e.target;
+    setFormData({...formData, [name]: value});
+
+    if (name === "email") validateEmail(value);
+    if (name === "password") validatePassword(value);
   };
 
+  const validateEmail = (email) => {
+    const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email === "") {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+    } else if (!emailValidation.test(email)) {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "올바른 이메일 형식이 아닙니다." }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+    }
+  };
+
+  const validatePassword = (password) => {
+    if (password === "") {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+    } else if (password.length < 8) {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "비밀번호는 8자 이상이어야 합니다." }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const {email, password} = formData;
+
+    if (!email || !password || errors.email || errors.password) {
+      toast.error("입력값을 다시 확인해주세요.");
+      return;
+    }
+
+    try {
+      const data = await login(email, password);
+      toast.success("로그인 성공!")
+      navigate("/home");
+    } catch (error) {
+      toast.error("알 수 없는 에러가 발생했습니다. 다시 시도해주세요.")
+    }
+  };
 
   return (
     <Background>
@@ -150,19 +74,30 @@ const LoginComponent = () => {
             alt=""
           />
         </Logo>
-        <form onSubmit={handleLogin}>
-          <Input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Form onSubmit={handleLogin}>
+          <Input
+          type="email"
+          name="email"
+          placeholder="이메일"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          />
+          {errors.email && <Span>{errors.email}</Span>}
           <Input
             type="password"
+            name="password"
             placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
+            required
           />
+          {errors.password && <Span>{errors.password}</Span>}
           <ButtonGroup>
             <Button type="submit">로그인</Button>
             <LinkButton to="/signup">회원가입</LinkButton>
           </ButtonGroup>
-        </form>
+        </Form>
       </Container>
     </Background>
   );
@@ -209,6 +144,12 @@ const Title = styled.h1`
   margin-bottom: 10px;
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
 const Input = styled.input`
   display: block;
   width: 267px;
@@ -216,11 +157,17 @@ const Input = styled.input`
   border: 0;
   border-radius: 5px;
   font-size: 14px;
+  font-family: inherit;
   color: var(--font--secondary--color);
-  margin: 0 auto 20px;
+  margin: 0 auto 10px;
 
   &::placeholder {
     color: var(--font--secondary--color);
+  }
+
+  &:focus {
+    outline: 2px solid var(--font--secondary--color);
+    
   }
 `;
 
@@ -247,6 +194,7 @@ const LinkButton = styled(Link)`
   border-radius: 10px;
   cursor: pointer;
   text-decoration: none;
+  align-content: center;
 `;
 
 const ButtonGroup = styled.div`
@@ -257,4 +205,10 @@ const ButtonGroup = styled.div`
   gap: 35px;
 `;
 
-
+const Span = styled.span`
+  font-size: 11px;
+  color: #E74646;
+  display: flex;
+  width: 260px;
+  margin-bottom: 20px;
+`

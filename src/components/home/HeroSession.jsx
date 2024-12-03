@@ -14,7 +14,7 @@ const HeroSession = () => {
           </TextContainer>
           <ButtonContainer>
             <Button onClick={() => navigate('/post')}>주변 붕빵집 추가하기</Button>
-            <Button onClick={() => navigate('/list')}>주변 붕어빵 리스트</Button>
+            <Button onClick={() => navigate('/list')}>TOP 10 붕어빵 리스트 </Button>
           </ButtonContainer>
         </HeroContent>
         <Heroimg src="images/고양이포장마차.jpg"></Heroimg>
@@ -47,15 +47,15 @@ const HeroContent = styled.div`
   margin: 30px;
 `;
 
-const HeroText = styled.h1`
+const TextContainer = styled.div`
+  margin-bottom: 20px;
+`;
+
+const HeroText = styled.p`
   font-size: 36px;
   margin-bottom: 10px;
   padding: 5px;
   color: var(--font--primary--color);
-`;
-
-const TextContainer = styled.p`
-  margin-bottom: 20px;
 `;
 
 const ButtonContainer = styled.div`

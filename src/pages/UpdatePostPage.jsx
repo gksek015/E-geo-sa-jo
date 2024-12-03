@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PostUpdateDelete from '../components/posting/PostUpdateDelete';
 import { useParams } from 'react-router-dom';
@@ -7,5 +8,6 @@ const UpdatePostPage = () => {
   // const { id : storeId } = useParams();
   return <PostUpdateDelete storeId={storeId}/>;
 };
+
 
 export default UpdatePostPage;

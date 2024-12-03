@@ -11,6 +11,7 @@ const PostPage = () => {
       <Footer />
     </div>
   );
+
 };
 
 export default PostPage;
