@@ -25,7 +25,19 @@ const MyProfilePage = () => {
 
     // 유저 프로필 이미지 가져오기
     const fetchUserProfileImage = async () => {
-      const userId = '004f4d50-f6c0-45fb-98d0-ca294cc24505';
+      
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      const userId = user.id;
+  
+      if (userError || !user) {
+        toast.error('로그인 상태를 확인하세요!');
+        return;
+      }
+
       const { data: userProfile, error } = await supabase
         .from('users')
         .select('profile_image, nick_name')
@@ -75,6 +87,16 @@ const MyProfilePage = () => {
     e.preventDefault();
     if (!file) return toast.warning('업로드할 파일을 선택하세요!');
 
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+  
+    if (userError || !user) {
+      toast.error('로그인 상태를 확인하세요!');
+      return;
+    }
+
     const { data: imageData, error } = await supabase.storage.from('profile_image').upload(`${uuidv4()}.png`, file);
 
     if (error) {
@@ -86,9 +108,7 @@ const MyProfilePage = () => {
     const { data: publicUrlData } = supabase.storage.from('profile_image').getPublicUrl(imageData.path);
     const imageUrl = publicUrlData.publicUrl;
 
-    // const userId = supabase.auth.user().id;
-    const userId = '004f4d50-f6c0-45fb-98d0-ca294cc24505';
-    const { error: updateError } = await supabase.from('users').update({ profile_image: imageUrl }).eq('id', userId);
+    const { error: updateError } = await supabase.from('users').update({ profile_image: imageUrl }).eq('id', user.id);
 
     if (updateError) {
       console.error(updateError);
@@ -123,8 +143,17 @@ const MyProfilePage = () => {
       return;
     }
 
-    const userId = '004f4d50-f6c0-45fb-98d0-ca294cc24505';
-    const { error: updateError } = await supabase.from('users').update({ nick_name: newNickname }).eq('id', userId);
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+  
+    if (userError || !user) {
+      toast.error('로그인 상태를 확인하세요!');
+      return;
+    }
+
+    const { error: updateError } = await supabase.from('users').update({ nick_name: newNickname }).eq('id', user.id);
 
     if (updateError) {
       toast.error('닉네임 변경에 실패했습니다.');
@@ -135,6 +164,8 @@ const MyProfilePage = () => {
     toast.success('닉네임이 변경되었습니다.');
   };
 
+
+  // 비밀번호 변경 로직
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (!newPassword || newPassword.length < 8) {
@@ -157,6 +188,8 @@ const MyProfilePage = () => {
 
   const handleDeleteAccount = (e) => {
     e.preventDefault();
+    
+
   };
 
   return (
@@ -207,18 +240,14 @@ const MyProfilePage = () => {
 export default MyProfilePage;
 
 const ProfileContainer = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: auto;
-  padding: 50px 20px;
+  margin-bottom: 30px;
+  padding: 40px 20px;
   font-family: 'yg-jalnan', sans-serif;
-  width: 1400px;
-  height: 700px;
+  width: 1280px;
   background-color: var(--background--color);
 `;
 
@@ -263,7 +292,6 @@ const ImageButtonGroup = styled.div`
 `;
 
 const UploadButton = styled.button`
-  font-family: 'yg-jalnan', sans-serif;
   font-size: 18px;
   background-color: var(--button--color);
   border: none;
@@ -304,7 +332,6 @@ const InputGroup = styled.form`
 `;
 
 const NicknameButton = styled.button`
-  font-family: 'yg-jalnan', sans-serif;
   font-size: 14px;
   background-color: var(--button--color);
   border: none;
@@ -326,7 +353,7 @@ const DeleteButton = styled.button`
   align-items: center;
   margin-top: 40px;
   margin-left: auto;
-  margin-right: 440px;
+  margin-right: 380px;
   border: none;
   padding: 4px 8px;
   background-color: transparent;
