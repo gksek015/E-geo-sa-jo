@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import supabase from '../../supabase/supabaseClient';
 import { toast } from 'react-toastify';
+import { login } from '../../api/authApi';
 
 const LoginComponent = () => {
   const [formData, setFormData] = useState({
@@ -10,34 +10,59 @@ const LoginComponent = () => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (formData.email) {
+      validateEmail(formData.email);
+    }
+    if (formData.password) {
+      validatePassword(formData.password);
+    }
+  }, [formData.email, formData.password]);
 
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormData({...formData, [name]: value});
-  }
+  };
+
+  const validateEmail = (email) => {
+    const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "이메일을 입력해주세요." }));
+    } else if (!emailValidation.test(email)) {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "올바른 이메일 형식이 아닙니다." }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+    }
+  };
+
+  const validatePassword = (password) => {
+    if (password && password.length < 8) {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "비밀번호는 8자 이상이어야 합니다." }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     const {email, password} = formData;
 
+    if (!email || !password || errors.email || errors.password) {
+      toast.error("입력값을 다시 확인해주세요.");
+      return;
+    }
+
     try {
-      const {data, error} = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      console.log({data})
-
-      if (error) {
-        toast.error("로그인에 실패했습니다.")
-      }
-
-      if (data.user) {
-        toast.success("로그인 성공!");
-        navigate("/home");
-      } else {
-        toast.error("로그인에 실패했습니다.")
-      }
+      const data = await login(email, password);
+      toast.success("로그인 성공!")
+      navigate("/home");
     } catch (error) {
       toast.error("알 수 없는 에러가 발생했습니다. 다시 시도해주세요.")
     }
@@ -62,6 +87,7 @@ const LoginComponent = () => {
           onChange={handleChange}
           required
           />
+          {errors.email && <span>{errors.email}</span>}
           <Input
             type="password"
             name="password"
@@ -70,6 +96,7 @@ const LoginComponent = () => {
             onChange={handleChange}
             required
           />
+          {errors.password && <span>{errors.password}</span>}
           <ButtonGroup>
             <Button type="submit">로그인</Button>
             <LinkButton to="/signup">회원가입</LinkButton>
@@ -128,11 +155,17 @@ const Input = styled.input`
   border: 0;
   border-radius: 5px;
   font-size: 14px;
+  font-family: inherit;
   color: var(--font--secondary--color);
   margin: 0 auto 20px;
 
   &::placeholder {
     color: var(--font--secondary--color);
+  }
+
+  &:focus {
+    outline: 2px solid var(--font--secondary--color);
+    
   }
 `;
 
@@ -159,6 +192,7 @@ const LinkButton = styled(Link)`
   border-radius: 10px;
   cursor: pointer;
   text-decoration: none;
+  align-content: center;
 `;
 
 const ButtonGroup = styled.div`
