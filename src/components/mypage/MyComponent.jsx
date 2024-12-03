@@ -13,74 +13,71 @@ const fetchMyData = async () => {
 };
 
 const MyComponent = () => {
-  const [stores, setStores] = useState([]);
-  const [filteredStores, setFilteredStores] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('전체');
-  const [defaultImage, setDefaultImage] = useState(null);
-
-  useEffect(() => {
-    const loadDefaultImage = () => {
-      const imageUrl = fetchDefaultImageUrl();
-      setDefaultImage(imageUrl);
+    const [stores, setStores] = useState([]);
+    const [filteredStores, setFilteredStores] = useState([]);
+    const [categories] = useState(['가게 종류', '노상', '카페', '편의점', '기타']);
+    const [selectedCategory, setSelectedCategory] = useState('가게 종류');
+    const [defaultImage, setDefaultImage] = useState(null);
+  
+    useEffect(() => {
+      const loadDefaultImage = () => {
+        const imageUrl = fetchDefaultImageUrl();
+        setDefaultImage(imageUrl);
+      };
+  
+      const loadData = async () => {
+        const fetchedData = await fetchMyData();
+        setStores(fetchedData || []);
+        setFilteredStores(fetchedData || []);
+      };
+  
+      loadDefaultImage();
+      loadData();
+    }, []);
+  
+    const handleCategoryChange = (e) => {
+      const category = e.target.value;
+      setSelectedCategory(category);
+  
+      if (category === '가게 종류') {
+        setFilteredStores(stores);
+      } else {
+        const filtered = stores.filter((store) => store.category === category);
+        setFilteredStores(filtered);
+      }
     };
-
-    const loadData = async () => {
-      const fetchedData = await fetchMyData();
-      setStores(fetchedData || []);
-      setFilteredStores(fetchedData || []);
-
-      const uniqueCategories = Array.from(new Set(fetchedData?.map((store) => store.category).filter(Boolean)));
-      setCategories(['전체', ...uniqueCategories]);
-    };
-
-    loadDefaultImage();
-    loadData();
-  }, []);
-
-  const handleCategoryChange = (e) => {
-    const category = e.target.value;
-    setSelectedCategory(category);
-
-    if (category === '전체') {
-      setFilteredStores(stores);
-    } else {
-      const filtered = stores.filter((store) => store.category === category);
-      setFilteredStores(filtered);
-    }
+  
+    return (
+      <PageContainer>
+        <HeaderContainer>
+          <HeaderTextContainer>
+            <HeaderText>마이페이지</HeaderText>
+            <CategorySelector onChange={handleCategoryChange} value={selectedCategory}>
+              {categories.map((category, index) => (
+                <option key={index} value={category}>
+                  {category}
+                </option>
+              ))}
+            </CategorySelector>
+          </HeaderTextContainer>
+        </HeaderContainer>
+        <StoreContainer>
+          {filteredStores.length > 0 ? (
+            filteredStores.map((store, index) => (
+              <StoreCard key={index}>
+                <StoreImage src={defaultImage} alt="default" />
+                <StoreName>{store.name || '이름 없음'}</StoreName>
+                <StoreAddress>{store.map_address || '주소 없음'}</StoreAddress>
+                <StoreCategory>{store.category || '카테고리 없음'}</StoreCategory>
+              </StoreCard>
+            ))
+          ) : (
+            <NoDataMessage>표시할 데이터가 없습니다.</NoDataMessage>
+          )}
+        </StoreContainer>
+      </PageContainer>
+    );
   };
-
-  return (
-    <PageContainer>
-      <HeaderContainer>
-        <HeaderTextContainer>
-          <HeaderText>마이페이지</HeaderText>
-          <CategorySelector onChange={handleCategoryChange} value={selectedCategory}>
-            {categories.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
-              </option>
-            ))}
-          </CategorySelector>
-        </HeaderTextContainer>
-      </HeaderContainer>
-      <StoreContainer>
-        {filteredStores.length > 0 ? (
-          filteredStores.map((store, index) => (
-            <StoreCard key={index}>
-              <StoreImage src={defaultImage} alt="default" />
-              <StoreName>{store.name || '이름 없음'}</StoreName>
-              <StoreAddress>{store.map_address || '주소 없음'}</StoreAddress>
-              <StoreCategory>{store.category || '카테고리 없음'}</StoreCategory>
-            </StoreCard>
-          ))
-        ) : (
-          <NoDataMessage>표시할 데이터가 없습니다.</NoDataMessage>
-        )}
-      </StoreContainer>
-    </PageContainer>
-  );
-};
 
 export default MyComponent;
 
@@ -109,11 +106,13 @@ const HeaderText = styled.p`
 `;
 
 const CategorySelector = styled.select`
+  font-family: 'yg-jalnan';
+  color: white;
   font-size: 16px;
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  background-color: #fff;
+  background-color: var(--button--color);
   cursor: pointer;
 
   &:hover {
