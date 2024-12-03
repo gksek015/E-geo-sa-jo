@@ -1,5 +1,5 @@
 import React from 'react';
-import PostUpdateDelete from '../components/layout/PostUpdateDelete';
+import PostUpdateDelete from '../components/posting/PostUpdateDelete';
 import { useParams } from 'react-router-dom';
 
 const UpdatePostPage = () => {
