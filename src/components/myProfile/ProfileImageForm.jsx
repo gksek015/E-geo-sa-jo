@@ -51,7 +51,7 @@ const ImageContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 36px;
+  gap: 30px;
 
   h2 {
     font-size: 40px;

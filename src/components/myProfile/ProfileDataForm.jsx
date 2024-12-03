@@ -122,7 +122,7 @@ const PasswordButton = styled(NicknameButton)`
 const DeleteButton = styled.button`
   display: flex;
   align-items: center;
-  margin-top: 40px;
+  margin-top: 30px;
   margin-left: auto;
   margin-right: 380px;
   border: none;

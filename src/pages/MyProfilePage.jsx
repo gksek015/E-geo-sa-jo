@@ -35,8 +35,7 @@ const ProfileContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin: auto;
-  margin-bottom: 30px;
-  padding: 30px 20px;
+  padding: 22px 20px;
   font-family: 'yg-jalnan', sans-serif;
   width: 1280px;
   background-color: var(--background--color);
