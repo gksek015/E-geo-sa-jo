@@ -1,7 +1,9 @@
 import Router from './shared/Router';
 
 const App = () => {
-  return <Router />;
+  return (
+    <Router />
+  );
 };
 
 export default App;
