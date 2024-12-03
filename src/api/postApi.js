@@ -1,4 +1,4 @@
-import { supabase } from '../supabase/supabaseClient';
+import supabase from "../supabase/supabaseClient";
 
 // 데이터 추가 함수
 export const addPost = async (formData) => {
