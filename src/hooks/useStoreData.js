@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import supabase from '../supabase/supabaseClient';
+import useAuthStore from '../zustand/useAuthStore';
 
 const useStoreData = () => {
   const { id } = useParams();
   const tsetId = '49aea70d-a279-4717-a328-529adf49d39b';
 
-  const [user, setUser] = useState({});
+  // 주스탠트로 변환
   const [storeData, setStoreData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { fetchUser } = useAuthStore();
 
   useEffect(() => {
     const fetchStoreData = async () => {
@@ -25,30 +28,10 @@ const useStoreData = () => {
     };
 
     fetchStoreData();
+    fetchUser();
   }, []);
 
-  useEffect(() => {
-    const getUser = async () => {
-      // const {
-      //   data: { user },
-      //   error
-      // } = await supabase.auth.getUser();
-      // if (error) {
-      //   console.error('사용자 정보를 가져오는 데 실패했습니다:', error.message);
-      // }
-      // console.log('user', user);
-      // if (user) {
-      const { data, error } = await supabase.from('users').select('id, nick_name');
-      if (error) {
-        console.error('프로필 정보를 가져오는 데 실패했습니다:', error.message);
-      }
-      setUser(data);
-      // }
-    };
-    getUser();
-  }, []);
-
-  return { storeData, isLoading, error, id, tsetId, user };
+  return { storeData, isLoading, error, id, tsetId };
 };
 
 export default useStoreData;

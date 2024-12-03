@@ -1,50 +1,39 @@
-import { useState } from 'react';
 import styled from 'styled-components';
-import supabase from '../../supabase/supabaseClient';
-import { useParams } from 'react-router-dom';
-import useStoreData from '../../hooks/useStoreData';
+import useCommentsData from '../../hooks/useCommentsData';
+import { useCommentStore } from '../../zustand/useCommentStore';
+import useAuthStore from '../../zustand/useAuthStore';
+import { useRef } from 'react';
 
 function CommentForm() {
-  const { id, tsetId, user } = useStoreData();
-  console.log(user);
-  const [commentsData, setCommentsData] = useState({});
+  // const { handleAddComment, commentContent, setCommentContent } = useCommentsData();
+  const inputRef = useRef(null);
 
-  const storecomment = async () => {
-    const { data, error } = await supabase.from('');
+  const { user } = useAuthStore();
+  console.log(user);
+  const { commentContent, setCommentContent, addComment } = useCommentStore();
+
+  const handleAddComment = (e) => {
+    e.preventDefault();
+    setCommentContent(inputRef.current.value);
+    addComment(user.id, user.nick_name, '49aea70d-a279-4717-a328-529adf49d39b');
   };
 
-  const handleAddComment = async (e) => {
+  const handleCommentInput = (e) => {
     e.preventDefault();
-    console.log('댓글작성 버튼 클릭');
-
-    if (!comment.trim()) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('commensts')
-        .insert([
-          {
-            user_id: '',
-            stoer_id: tsetId,
-            content: ''
-          }
-        ])
-        .select();
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        setCommentsData((prevComments) => [...prevComments, ...data]);
-      }
-      setCommentValue('');
-    } catch (error) {
-      console.error('댓글 작성 오류: ', error.message);
-    }
+    setCommentContent(e.target.value);
+    // useRef 리팩토링 추천 ~ !
   };
   return (
     <>
       <ChatMessageForm onSubmit={handleAddComment}>
-        <ChatMessageInput type="text" name="messageInput" placeholder="댓글을 작성해 주세요." />
+        <ChatMessageInput
+          type="text"
+          name="messageInput"
+          placeholder="댓글을 작성해 주세요."
+          // value={commentContent}
+          // onChange={handleCommentInput}
+          ref={inputRef}
+        />
         <MessageButton type="submit">작성하기</MessageButton>
       </ChatMessageForm>
     </>
