@@ -1,30 +1,35 @@
+import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import supabase  from "../supabase/supabaseClient";
-import useAuthStore from "../zustand/useAuthStore";
-
-// Supabase 인증 정보 확인
-const fetchAuthUser = async () => {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error) throw new Error(error.message);
-  return user;
-};
+import supabase from "../supabase/supabaseClient";
 
 const PublicRoute = () => {
-  const { user, setUser } = useAuthStore();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const { data: authUser, isLoading } = useQuery({
-    queryKey: ["authUser"],
-    queryFn: fetchAuthUser,
-    onSuccess: (fetchedUser) => {
-      if (fetchedUser) setUser(fetchedUser);
-    },
-    onError: () => {
-    setUser(null); // 로그인 정보가 없으면 상태 초기화
-    },
-  });
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
 
-  if (isLoading) return <div>Loading...</div>;
+      if (sessionData.session) {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+          console.error("User retrieval error:", error);
+          setUser(null);
+        } else {
+          setUser(data.user);
+        }
+      } else {
+        setUser(null); 
+      }
+      setLoading(false);
+    };
+
+    checkUser();
+  }, []);
+
+  if (loading) {
+    return <div>로딩 중...</div>; 
+  }
 
   return user ? <Navigate to="/home" /> : <Outlet />;
 };
