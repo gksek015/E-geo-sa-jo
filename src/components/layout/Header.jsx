@@ -8,7 +8,6 @@ export default function Header() {
 
   const handleLogout = async () => {
     const { data, error } = await supabase.auth.signOut();
-    console.log('signout: ', { data, error });
     navigate('/');
   };
 

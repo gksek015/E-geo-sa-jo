@@ -1,11 +1,17 @@
-import { create } from "zustand";
+// import { create } from "zustand";
 
-// 사용자 정보 전역관리
+// const useAuthStore = create((set) => ({
+//   token: null, // 초기 토큰 값
 
-// set: 상태 관리 함수
-const useAuthStore = create((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-}));
+//   setToken: (newToken) => {
+//     console.log("setToken called with:", newToken); // 토큰 설정 확인
+//     set({ token: newToken });
+//   },
 
-export default useAuthStore;
+//   clearToken: () => {
+//     console.log("clearToken called"); // 토큰 초기화 확인
+//     set({ token: null });
+//   },
+// }));
+
+// export default useAuthStore;

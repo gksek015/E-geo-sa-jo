@@ -1,33 +1,37 @@
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import supabase from "../supabase/supabaseClient";
-import useAuthStore from "../zustand/useAuthStore";
-
-const fetchUserData = async () => {
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const { data } = await supabase
-    .from("user")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  return data;
-};
 
 const PrivateRoute = () => {
-  const { user, setUser } = useAuthStore();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const { isLoading } = useQuery({
-    queryKey: ["userData"],
-    queryFn: fetchUserData,
-    onSuccess: (fetchedUser) => {
-      setUser(fetchedUser);
-    },
-  });
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
 
-  if (isLoading) return <div>Loading...</div>;
+      if (sessionData.session) {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) {
+          console.error("User retrieval error:", error);
+          setUser(null);
+        } else {
+          setUser(data.user);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    };
 
-  return user ? <Outlet /> : <Navigate to="/login" />;
+    checkUser();
+  }, []);
+
+  if (loading) {
+    return <div>로딩 중...</div>; 
+  }
+
+  return user ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default PrivateRoute;

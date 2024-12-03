@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// import PublicRoute from './PublicRoute'; 
-// import PrivateRoute from './PrivateRoute'; 
+import PublicRoute from './PublicRoute'; 
+import PrivateRoute from './PrivateRoute'; 
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import HomePage from '../pages/HomePage';
@@ -17,12 +17,12 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route element={<PublicRoute />}> */}
+        <Route element={<PublicRoute />}>
           <Route path="/" element={<LoginPage />} />
           <Route path="signup" element={<SignupPage />} />
-        {/* </Route> */}
+        </Route>
 
-        {/* <Route path="/" element={<PrivateRoute />}> */}
+        <Route path="/" element={<PrivateRoute />}>
           <Route element={<Layout />}>
             <Route path="home" element={<HomePage />} />
             <Route path="home/:id" element={<DetailPage />} />
@@ -32,7 +32,7 @@ const Router = () => {
             <Route path="post" element={<PostPage />} />
             <Route path="list" element={<ListPage />} />
             <Route path="list/:id" element={<DetailPage />} />
-          {/* </Route> */}
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
