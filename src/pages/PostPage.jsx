@@ -6,9 +6,7 @@ import Footer from '../components/layout/Footer';
 const PostPage = () => {
   return (
     <div>
-      <Header />
         <PostForm />
-      <Footer />
     </div>
   );
 
