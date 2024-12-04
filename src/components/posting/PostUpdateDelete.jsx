@@ -11,7 +11,7 @@ const PostUpdateDelete = () => {
   const { formData, setFormData, resetForm } = usePostStore();
   const { id: storeId } = useParams();
   const navigate = useNavigate();
-  
+
   //스토어 정보 가져오기
   const { data, isLoading, error } = useQuery({
     queryKey: ['stores', storeId],
@@ -30,7 +30,7 @@ const PostUpdateDelete = () => {
 
   // 데이터 수정 Mutation
   const updateMutation = useMutation({
-    mutationFn: async (updateData) => await updatePost(updateData,storeId),
+    mutationFn: async (updateData) => await updatePost(updateData, storeId),
     onSuccess: (data) => {
       console.log(data);
       toast.success('수정 성공! 🎉');
@@ -115,10 +115,10 @@ export default PostUpdateDelete;
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #fff;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  padding: 20px;
+  background-color: #f9f9f9; 
 `;
 
 const Container = styled.div`
