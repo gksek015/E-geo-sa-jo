@@ -1,15 +1,14 @@
 import styled from 'styled-components';
-import useCommentsData from '../../hooks/useCommentsData';
 import { useCommentStore } from '../../zustand/useCommentStore';
 import useAuthStore from '../../zustand/useAuthStore';
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 function CommentForm() {
-  const inputRef = useRef(null);
+  const inputRef = useRef('');
   const { id } = useParams();
   const { user } = useAuthStore();
-  const { commentContent, setCommentContent, addComment } = useCommentStore();
+  const { setCommentContent, addComment } = useCommentStore();
 
   useEffect(() => {}, []);
   const handleAddComment = (e) => {
