@@ -5,11 +5,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import UpdateMap from './UpdateMap';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const PostUpdateDelete = () => {
   const { formData, setFormData, resetForm } = usePostStore();
   const { id: storeId } = useParams();
+  const navigate = useNavigate();
   
   //스토어 정보 가져오기
   const { data, isLoading, error } = useQuery({
@@ -29,10 +30,11 @@ const PostUpdateDelete = () => {
 
   // 데이터 수정 Mutation
   const updateMutation = useMutation({
-    mutationFn: async (updateData) => await updatePost(updateData),
+    mutationFn: async (updateData) => await updatePost(updateData,storeId),
     onSuccess: (data) => {
       console.log(data);
       toast.success('수정 성공! 🎉');
+      navigate(`/home/${storeId}`);
     },
     onError: (error) => {
       console.error(error);

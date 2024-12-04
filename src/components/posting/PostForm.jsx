@@ -4,9 +4,11 @@ import PostMap from './PostMap';
 import supabase from '../../supabase/supabaseClient';
 import styled from 'styled-components';
 import { getId } from '../../api/authApi';
+import { useNavigate } from 'react-router-dom';
 
 const PostForm = () => {
   const { formData, setFormData, resetForm } = usePostStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -30,6 +32,7 @@ const PostForm = () => {
       } else {
         alert('삽입 성공!');
         resetForm();
+        navigate('/mypage')
       }
     } catch (error) {
       console.error('삽입 중 오류 발생:', error);
