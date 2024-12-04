@@ -7,85 +7,103 @@ const fetchDefaultImageUrl = () => {
   return data?.publicUrl || null;
 };
 
-const fetchMyData = async () => {
-  const { data } = await supabase.from('stores').select('name, map_address, category');
+const fetchMyData = async (userId) => {
+  const { data, error } = await supabase
+    .from('stores')
+    .select('name, map_address, category')
+    .eq('user_id', userId); // 로그인한 사용자의 게시글만 가져오기
+  if (error) {
+    console.error('Error fetching user data:', error);
+    return [];
+  }
   return data;
 };
 
 const MyComponent = () => {
-    const [stores, setStores] = useState([]);
-    const [filteredStores, setFilteredStores] = useState([]);
-    const [categories] = useState(['가게 종류', '노상', '카페', '편의점', '기타']);
-    const [selectedCategory, setSelectedCategory] = useState('가게 종류');
-    const [defaultImage, setDefaultImage] = useState(null);
-  
-    useEffect(() => {
-      const loadDefaultImage = () => {
-        const imageUrl = fetchDefaultImageUrl();
-        setDefaultImage(imageUrl);
-      };
-  
-      const loadData = async () => {
-        const fetchedData = await fetchMyData();
-        setStores(fetchedData || []);
-        setFilteredStores(fetchedData || []);
-      };
-  
-      loadDefaultImage();
-      loadData();
-    }, []);
-  
-    const handleCategoryChange = (e) => {
-      const category = e.target.value;
-      setSelectedCategory(category);
-  
-      if (category === '가게 종류') {
-        setFilteredStores(stores);
-      } else {
-        const filtered = stores.filter((store) => store.category === category);
-        setFilteredStores(filtered);
-      }
+  const [stores, setStores] = useState([]);
+  const [filteredStores, setFilteredStores] = useState([]);
+  const [categories] = useState(['가게 종류', '노상', '카페', '편의점', '기타']);
+  const [selectedCategory, setSelectedCategory] = useState('가게 종류');
+  const [defaultImage, setDefaultImage] = useState(null);
+
+  useEffect(() => {
+    const loadDefaultImage = () => {
+      const imageUrl = fetchDefaultImageUrl();
+      setDefaultImage(imageUrl);
     };
-  
-    return (
-      <PageContainer>
-        <HeaderContainer>
-          <HeaderTextContainer>
-            <HeaderText>마이페이지</HeaderText>
-            <CategorySelector onChange={handleCategoryChange} value={selectedCategory}>
-              {categories.map((category, index) => (
-                <option key={index} value={category}>
-                  {category}
-                </option>
-              ))}
-            </CategorySelector>
-          </HeaderTextContainer>
-        </HeaderContainer>
-        <StoreContainer>
-          {filteredStores.length > 0 ? (
-            filteredStores.map((store, index) => (
-              <StoreCard key={index}>
-                <StoreImage src={defaultImage} alt="default" />
-                <StoreName>{store.name || '이름 없음'}</StoreName>
-                <StoreAddress>{store.map_address || '주소 없음'}</StoreAddress>
-                <StoreCategory>{store.category || '카테고리 없음'}</StoreCategory>
-              </StoreCard>
-            ))
-          ) : (
-            <NoDataMessage>표시할 데이터가 없습니다.</NoDataMessage>
-          )}
-        </StoreContainer>
-      </PageContainer>
-    );
+
+    const loadData = async () => {
+      // 현재 로그인한 사용자 정보 가져오기
+      const { data: user, error } = await supabase.auth.getUser();
+      if (error || !user) {
+        console.error('Error fetching user:', error);
+        return;
+      }
+
+      // 사용자 ID로 데이터 가져오기
+      const userId = user.id;
+      const fetchedData = await fetchMyData(userId);
+      setStores(fetchedData || []);
+      setFilteredStores(fetchedData || []);
+    };
+
+    loadDefaultImage();
+    loadData();
+  }, []);
+
+  const handleCategoryChange = (e) => {
+    const category = e.target.value;
+    setSelectedCategory(category);
+
+    if (category === '가게 종류') {
+      setFilteredStores(stores);
+    } else {
+      const filtered = stores.filter((store) => store.category === category);
+      setFilteredStores(filtered);
+    }
   };
+
+  return (
+    <PageContainer>
+      <HeaderContainer>
+        <HeaderTextContainer>
+          <HeaderText>마이페이지</HeaderText>
+          <CategorySelector onChange={handleCategoryChange} value={selectedCategory}>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </CategorySelector>
+        </HeaderTextContainer>
+      </HeaderContainer>
+      <StoreContainer>
+        {filteredStores.length > 0 ? (
+          filteredStores.map((store, index) => (
+            <StoreCard key={index}>
+              <StoreImage src={defaultImage} alt="default" />
+              <StoreName>{store.name || '이름 없음'}</StoreName>
+              <StoreAddress>{store.map_address || '주소 없음'}</StoreAddress>
+              <StoreCategory>{store.category || '카테고리 없음'}</StoreCategory>
+            </StoreCard>
+          ))
+        ) : (
+          <NoDataMessage>표시할 데이터가 없습니다.</NoDataMessage>
+        )}
+      </StoreContainer>
+    </PageContainer>
+  );
+};
 
 export default MyComponent;
 
+// 기존 스타일 코드는 유지
 const PageContainer = styled.div`
   width: 1400px;
   margin: 0 auto;
-  overflow-y: auto;
   max-height: 100vh;
+  box-sizing: border-box;
+  padding: 20px;
 `;
 
 const HeaderContainer = styled.div`
@@ -112,6 +130,7 @@ const CategorySelector = styled.select`
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  margin-right: 30px;
   background-color: var(--button--color);
   cursor: pointer;
 
@@ -126,6 +145,10 @@ const StoreContainer = styled.div`
   gap: 20px;
   margin-top: 20px;
   margin-bottom: 30px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding: 10px;
+  box-sizing: border-box;
 `;
 
 const StoreCard = styled.div`
