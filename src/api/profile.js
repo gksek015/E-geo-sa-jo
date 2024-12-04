@@ -62,7 +62,7 @@ export const updateProfileImage = async (file) => {
   return imageUrl;
 };
 
-// storage public 에서 default image 불렁오기
+// storage public 에서 default image 불러오기
 export const fetchDefaultImage = () => {
   const { data } = supabase.storage.from('profile_image').getPublicUrl('default.png');
   const defaultImageUrl = data.publicUrl;
