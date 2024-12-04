@@ -17,16 +17,19 @@ const ProfileImageForm = ({ profileImage, setProfileImage }) => {
   }, []);
 
   // 프로필 사진 수파베이스에 저장
-  const handleImageUpdate = useCallback(async (e) => {
-    e.preventDefault();
-    if (!file) return toast.warning('업로드할 파일을 선택하세요!');
+  const handleImageUpdate = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (!file) return toast.warning('업로드할 파일을 선택하세요!');
 
-    const imageUrl = await updateProfileImage(file);
-    setProfileImage(imageUrl);
-    toast.success('프로필 사진이 변경되었습니다.');
-  }, [file, setProfileImage]);
+      const imageUrl = await updateProfileImage(file);
+      setProfileImage(imageUrl);
+      toast.success('프로필 사진이 변경되었습니다.');
+    },
+    [file, setProfileImage]
+  );
 
-  const userProfileImage = useMemo(() => preview || profileImage, [preview, profileImage]); 
+  const userProfileImage = useMemo(() => preview || profileImage, [preview, profileImage]);
 
   return (
     <ImageContainer onSubmit={handleImageUpdate}>

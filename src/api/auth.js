@@ -22,8 +22,11 @@ export const updatePassword = async (newPassword) => {
   const { error } = await supabase.auth.updateUser({ password: newPassword });
 
   if (error) {
-    toast.error('비밀번호 변경에 실패했습니다.');
+    toast.error('현재 비밀번호와 다른 비밀번호를 입력해주세요.');
+    return false;
   }
+
+  return true;
 };
 
 // 계정 삭제
