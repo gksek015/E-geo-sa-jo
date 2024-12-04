@@ -5,10 +5,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import UpdateMap from './UpdateMap';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 
-const PostUpdateDelete = ({ storeId }) => {
+const PostUpdateDelete = () => {
   const { formData, setFormData, resetForm } = usePostStore();
-
+  const { id: storeId } = useParams();
+  
   //스토어 정보 가져오기
   const { data, isLoading, error } = useQuery({
     queryKey: ['stores', storeId],
