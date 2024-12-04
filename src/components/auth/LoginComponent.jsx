@@ -82,6 +82,7 @@ const LoginComponent = () => {
           value={formData.email}
           onChange={handleChange}
           required
+          autoComplete="off"
           />
           {errors.email && <Span>{errors.email}</Span>}
           <Input
