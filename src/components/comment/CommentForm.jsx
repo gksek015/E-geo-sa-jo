@@ -2,38 +2,26 @@ import styled from 'styled-components';
 import useCommentsData from '../../hooks/useCommentsData';
 import { useCommentStore } from '../../zustand/useCommentStore';
 import useAuthStore from '../../zustand/useAuthStore';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
 function CommentForm() {
-  // const { handleAddComment, commentContent, setCommentContent } = useCommentsData();
   const inputRef = useRef(null);
-
+  const { id } = useParams();
   const { user } = useAuthStore();
-  console.log(user);
   const { commentContent, setCommentContent, addComment } = useCommentStore();
 
+  useEffect(() => {}, []);
   const handleAddComment = (e) => {
     e.preventDefault();
     setCommentContent(inputRef.current.value);
-    addComment(user.id, user.nick_name, '49aea70d-a279-4717-a328-529adf49d39b');
+    addComment(user.id, id);
   };
 
-  const handleCommentInput = (e) => {
-    e.preventDefault();
-    setCommentContent(e.target.value);
-    // useRef 리팩토링 추천 ~ !
-  };
   return (
     <>
       <ChatMessageForm onSubmit={handleAddComment}>
-        <ChatMessageInput
-          type="text"
-          name="messageInput"
-          placeholder="댓글을 작성해 주세요."
-          // value={commentContent}
-          // onChange={handleCommentInput}
-          ref={inputRef}
-        />
+        <ChatMessageInput type="text" name="messageInput" placeholder="댓글을 작성해 주세요." ref={inputRef} />
         <MessageButton type="submit">작성하기</MessageButton>
       </ChatMessageForm>
     </>

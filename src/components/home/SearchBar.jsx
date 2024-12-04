@@ -1,56 +1,15 @@
 import styled from 'styled-components';
 import { IoMdSearch } from 'react-icons/io';
-import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
 
-const fetchPlaces = async (keyword) => {
-  const places = new kakao.maps.services.Places();
-  const result = new Promise((resolve, reject) => {
-    places.keywordSearch(keyword, (data, status) => {
-      if (status === kakao.maps.services.Status.OK) {
-        resolve(
-          data.map((location) => ({
-            lat: parseFloat(location.y),
-            lng: parseFloat(location.x),
-            content: location.place_name
-          }))
-        );
-      } else {
-        reject(new Error('검색 결과가 없습니다.'));
-      }
-    });
-  });
-
-  console.log(result);
-  return result;
-};
-
-const SearchBox = ({ searchTerm, setSearchTerm, onSearch }) => {
-  const { data, refetch, isLoading } = useQuery({
-    queryKey: ['places', searchTerm],
-    queryFn: async () => await fetchPlaces(searchTerm),
-    enabled: false,
-    onSuccess: () => {},
-    onError: (err) => toast.error(err.message)
-  });
-
-  useEffect(() => {
-    if (!data) return;
-    onSearch(data);
-  }, [data]);
-
-  if (isLoading) {
-    return <></>;
-  }
-
+const SearchBar = ({ searchTerm, setSearchTerm, onSearch }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!searchTerm) {
+    if (!searchTerm.trim()) {
       toast.error('검색어를 입력해 주세요');
       return;
     }
-    refetch();
+    onSearch(searchTerm.trim());
   };
 
   return (
@@ -72,7 +31,7 @@ const SearchBox = ({ searchTerm, setSearchTerm, onSearch }) => {
   );
 };
 
-export default SearchBox;
+export default SearchBar;
 
 const SearchContainer = styled.div`
   width: 1280px;
@@ -112,6 +71,7 @@ const SearchInput = styled.input`
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 10px;
+  color: #2e2e2e;
   outline: none;
 
   &::placeholder {

@@ -74,14 +74,14 @@ const LoginComponent = () => {
             alt=""
           />
         </Logo>
-        <Form onSubmit={handleLogin}>
+        <Form onSubmit={handleLogin} noValidate>
           <Input
           type="email"
           name="email"
           placeholder="이메일"
           value={formData.email}
           onChange={handleChange}
-          required
+          autoComplete="off"
           />
           {errors.email && <Span>{errors.email}</Span>}
           <Input
@@ -90,7 +90,6 @@ const LoginComponent = () => {
             placeholder="비밀번호"
             value={formData.password}
             onChange={handleChange}
-            required
           />
           {errors.password && <Span>{errors.password}</Span>}
           <ButtonGroup>

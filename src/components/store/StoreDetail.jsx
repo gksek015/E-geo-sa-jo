@@ -1,19 +1,29 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import useAuthStore from '../../zustand/useAuthStore';
+import { useEffect, useState } from 'react';
 
 const StoreDetail = ({ store }) => {
-  // const { tsetId, id } = useStoreData();
+  const { user } = useAuthStore();
+
+  const navigate = useNavigate();
+
+  const isPostWriter = store.user_id === user.id ? true : false;
+
+  const handleStoreUpdata = (e) => {
+    e.preventDefault();
+    navigate(`/mypage/${store.id}`);
+  };
 
   const handleShowMap = (e, location) => {
     e.preventDefault();
-    console.log(location);
     const locationObj = JSON.parse(location);
-    // navigate(`https://map.kakao.com/link/map/37.402056,127.108212`); 싱글페이지 url
     window.open(`https://map.kakao.com/link/map/${locationObj.lat},${locationObj.lng}`, '_blank');
-    console.log(`https://map.kakao.com/link/map/${locationObj.lat},${locationObj.lng}`);
   };
 
   return (
     <>
+      {isPostWriter && <UpdataButton onClick={handleStoreUpdata}>수정하기</UpdataButton>}
       <InputGroup>
         <p>{store.name}</p>
       </InputGroup>

@@ -1,18 +1,15 @@
-import { useState, useEffect } from 'react';
+import { create } from 'zustand';
 import { toast } from 'react-toastify';
 import supabase from '../supabase/supabaseClient';
 import useAuthStore from '../zustand/useAuthStore';
 
-const useLikesData = (storeId) => {
-  const { user } = useAuthStore();
-  const [likes, setLikes] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
+const useLikesStore = create((set, get) => ({
+  likes: 0,
+  isLiked: false,
 
-  // useEffect(() => {
-  //   fetchLikes();
-  // }, []);
+  fetchLikes: async (storeId) => {
+    const { user } = useAuthStore.getState();
 
-  const fetchLikes = async () => {
     if (storeId) {
       const { data, error } = await supabase.from('likes').select('count').eq('store_id', storeId);
 
@@ -20,22 +17,25 @@ const useLikesData = (storeId) => {
         console.error('Error fetching likes:', error.message);
       } else {
         const totalLikes = data.reduce((sum, item) => sum + item.count, 0);
-        setLikes(totalLikes);
+        set({ likes: totalLikes });
       }
-      console.log(user);
+
       if (user) {
         const { data: userLike } = await supabase
           .from('likes')
           .select('*')
           .eq('store_id', storeId)
           .eq('user_id', user.id);
-        console.log('userLike', userLike);
-        setIsLiked(!!userLike.length);
+
+        set({ isLiked: !!userLike });
       }
     }
-  };
+  },
 
-  const handleLike = async () => {
+  handleLikes: async (testId = '49aea70d-a279-4717-a328-529adf49d39b') => {
+    const { user } = useAuthStore();
+    const { isLiked } = get();
+
     if (!user) {
       toast.error('로그인이 필요합니다.');
       return;
@@ -43,9 +43,8 @@ const useLikesData = (storeId) => {
 
     try {
       if (isLiked) {
-        await supabase.from('likes').delete().eq('store_id', storeId).eq('user_id', user.id);
-        setLikes((prev) => prev - 1);
-        setIsLiked(false);
+        await supabase.from('likes').delete().eq('store_id', testId).eq('user_id', user.id);
+        set((state) => ({ likes: state.likes - 1, isLiked: false }));
         toast.success('좋아요가 취소되었습니다.');
       } else {
         await supabase.from('likes').insert([
@@ -55,17 +54,14 @@ const useLikesData = (storeId) => {
             count: 1
           }
         ]);
-        setLikes((prev) => prev + 1);
-        setIsLiked(true);
+        set((state) => ({ likes: state.likes + 1, isLiked: true }));
         toast.success('좋아요가 추가되었습니다.');
       }
     } catch (error) {
       console.error('좋아요 처리 오류: ', error.message);
       toast.error('좋아요 처리 중 오류가 발생했습니다.');
     }
-  };
+  }
+}));
 
-  return { likes, isLiked, handleLike, fetchLikes };
-};
-
-export default useLikesData;
+export default useLikesStore;

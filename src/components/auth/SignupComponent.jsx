@@ -74,7 +74,7 @@ const SignupComponent = () => {
     const isFormValid = Object.values(errors).every((error) => error === '') && email && password && confirmPassword && nickname;
 
     if (!isFormValid) {
-      toast.error("확인 후 다시 시도해주세요.");
+      toast.error("모든 필드를 채워주세요.");
       return;
     }
 
@@ -99,14 +99,14 @@ const SignupComponent = () => {
             alt="Logo"
           />
         </Logo>
-        <Form onSubmit={handleSignup}>
+        <Form onSubmit={handleSignup} noValidate>
           <Input
             type="email"
             name="email"
             placeholder="이메일"
             value={formData.email}
             onChange={handleChange}
-            required
+            autoComplete="off"
           />
           {errors.email && <Span>{errors.email}</Span>}
           <Input
@@ -115,7 +115,6 @@ const SignupComponent = () => {
             placeholder="비밀번호"
             value={formData.password}
             onChange={handleChange}
-            required
           />
           {errors.password && <Span>{errors.password}</Span>}
           <Input
@@ -124,7 +123,6 @@ const SignupComponent = () => {
             placeholder="비밀번호 확인"
             value={formData.confirmPassword}
             onChange={handleChange}
-            required
           />
           {errors.confirmPassword && <Span>{errors.confirmPassword}</Span>}
           <Input
@@ -133,7 +131,6 @@ const SignupComponent = () => {
             placeholder="닉네임"
             value={formData.nickname}
             onChange={handleChange}
-            required
           />
           {errors.nickname && <Span>{errors.nickname}</Span>}
           <ButtonGroup>
