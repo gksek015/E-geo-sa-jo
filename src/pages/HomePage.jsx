@@ -1,28 +1,12 @@
 import styled from 'styled-components';
 import GlobalStyle from '../styled/GlobalStyle';
 import HeroSession from '../components/home/HeroSession';
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
 import MapDisplay from '../components/home/MapDisplay';
 import SearchBar from '../components/home/SearchBar';
-
-// Geolocation 데이터를 가져오는 함수
-const fetchUserLocation = async () => {
-  if (!navigator.geolocation) {
-    throw new Error('Geolocation을 사용할 수 없습니다.');
-  }
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(
-      (position) =>
-        resolve({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }),
-      (err) => reject(new Error(err.message))
-    );
-  });
-};
+import useUserLocation from '../hooks/useUserLocation';
+import useSearchPlaces from '../hooks/useSearchPlaces';
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -30,36 +14,41 @@ const HomePage = () => {
   const [mapBounds, setMapBounds] = useState(null);
   const [info, setInfo] = useState(null);
 
-  // 현재 위치 가져오기
-  const {
-    data: userLocation,
-    isLoading: isLoadingLocation,
-    error: locationError
-  } = useQuery({
-    queryKey: ['userLocation'],
-    queryFn: fetchUserLocation
-  });
+  const { data: userLocation, isLoading: isLoadingLocation, error: locationError } = useUserLocation();
+  const { data: searchResults, refetch, isFetching } = useSearchPlaces(searchTerm); // `isFetching` 추가
 
-  // 장소 검색 핸들러
-  const handleSearch = (results) => {
-    if (results.length) {
-      const bounds = new kakao.maps.LatLngBounds();
-      const newMarkers = results.map((place) => {
-        const position = new kakao.maps.LatLng(place.lat, place.lng);
-        bounds.extend(position);
-        return {
-          lat: place.lat,
-          lng: place.lng,
-          content: place.content
-        };
-      });
-      setMarkers(newMarkers);
-      setMapBounds(bounds); // 검색 결과 전체를 포함하는 범위 설정
-      setInfo(null);
-    } else {
-      toast.error('검색 결과가 없습니다.');
+  const handleSearch = async () => {
+    if (!searchTerm) {
+      toast.error('검색어를 입력해 주세요');
+      return;
     }
+    await refetch();
   };
+
+  // 검색 결과 처리
+  useEffect(() => {
+    if (!isFetching && searchResults) {
+      if (searchResults.length) {
+        const bounds = new kakao.maps.LatLngBounds();
+        const newMarkers = searchResults.map((place) => {
+          const position = new kakao.maps.LatLng(place.lat, place.lng);
+          bounds.extend(position);
+          return {
+            lat: place.lat,
+            lng: place.lng,
+            content: place.content
+          };
+        });
+        setMarkers(newMarkers);
+        setMapBounds(bounds);
+        setInfo(null);
+      } else {
+        toast.error('검색 결과가 없습니다.');
+        setMarkers([]);
+        setMapBounds(null);
+      }
+    }
+  }, [searchResults, isFetching]);
 
   return (
     <>
@@ -85,6 +74,8 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+// 스타일 컴포넌트 정의는 동일
 
 const MapContainer = styled.div`
   display: flex;
