@@ -32,7 +32,6 @@ const PostUpdateDelete = () => {
   const updateMutation = useMutation({
     mutationFn: async (updateData) => await updatePost(updateData, storeId),
     onSuccess: (data) => {
-      console.log(data);
       toast.success('수정 성공! 🎉');
       navigate(`/home/${storeId}`);
     },

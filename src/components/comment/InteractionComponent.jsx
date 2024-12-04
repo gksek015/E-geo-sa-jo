@@ -13,7 +13,6 @@ function InteractionComponent() {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    console.log('댓글 카운트', id);
     fetchCommentsData(id);
   }, [user]);
   //   const [commentCounter, StoreCommentCounter] = useState(0);

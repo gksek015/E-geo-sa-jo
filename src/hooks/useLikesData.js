@@ -22,14 +22,12 @@ const useLikesData = (storeId) => {
         const totalLikes = data.reduce((sum, item) => sum + item.count, 0);
         setLikes(totalLikes);
       }
-      console.log(user);
       if (user) {
         const { data: userLike } = await supabase
           .from('likes')
           .select('*')
           .eq('store_id', storeId)
           .eq('user_id', user.id);
-        console.log('userLike', userLike);
         setIsLiked(!!userLike.length);
       }
     }

@@ -12,16 +12,8 @@ import UpdatePostPage from '../pages/UpdatePostPage';
 import DetailPage from '../pages/DetailPage';
 import ListPage from '../pages/ListPage';
 import Layout from '../components/layout/Layout';
-import useAuthStore from '../zustand/useAuthStore';
-import { useEffect } from 'react';
 
 const Router = () => {
-  const { fetchUser } = useAuthStore();
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
   return (
     <BrowserRouter>
       <Routes>

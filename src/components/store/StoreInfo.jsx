@@ -19,9 +19,9 @@ function StoreInfo() {
 
   return (
     <>
-      <StoreInfoContainer key={id}>
+      <StoreInfoContainer>
         {storeData?.map((store) => (
-          <StoreDetail store={store} />
+          <StoreDetail key={store.id} store={store} />
         ))}
       </StoreInfoContainer>
     </>
