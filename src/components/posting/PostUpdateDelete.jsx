@@ -11,7 +11,7 @@ const PostUpdateDelete = () => {
   const { formData, setFormData, resetForm } = usePostStore();
   const { id: storeId } = useParams();
   const navigate = useNavigate();
-  
+
   //스토어 정보 가져오기
   const { data, isLoading, error } = useQuery({
     queryKey: ['stores', storeId],
@@ -30,9 +30,8 @@ const PostUpdateDelete = () => {
 
   // 데이터 수정 Mutation
   const updateMutation = useMutation({
-    mutationFn: async (updateData) => await updatePost(updateData,storeId),
+    mutationFn: async (updateData) => await updatePost(updateData, storeId),
     onSuccess: (data) => {
-      console.log(data);
       toast.success('수정 성공! 🎉');
       navigate(`/home/${storeId}`);
     },
