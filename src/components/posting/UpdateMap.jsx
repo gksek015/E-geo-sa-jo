@@ -29,7 +29,6 @@ const UpdateMap = () => {
 
     waitForKakaoMaps()
       .then((kakao) => {
-        console.log('Kakao Maps SDK 로드 성공:', kakao); //디버깅용
 
         const mapContainer = document.getElementById('map');
         const initialLocation = formData.location;
@@ -71,13 +70,7 @@ const UpdateMap = () => {
             } else {
               console.error('주소 변환 실패:', status);
             }
-            // marker.setPosition(coord);
-            // marker.setMap(map);
 
-            // onLocationChanging({
-            //   lat: coords.getLat(),
-            //   lng: coords.getLng()
-            // });
           });
         });
       })
