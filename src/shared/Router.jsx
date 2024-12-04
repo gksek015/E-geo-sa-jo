@@ -8,11 +8,10 @@ import HomePage from '../pages/HomePage';
 import MyPage from '../pages/MyPage';
 import MyProfilePage from '../pages/MyProfilePage';
 import PostPage from '../pages/PostPage';
-// import UpdatePostPage from '../pages/UpdatePostPage';
+import UpdatePostPage from '../pages/UpdatePostPage';
 import DetailPage from '../pages/DetailPage';
 import ListPage from '../pages/ListPage';
 import Layout from '../components/layout/Layout';
-
 
 const Router = () => {
   return (
@@ -28,7 +27,7 @@ const Router = () => {
             <Route path="home" element={<HomePage />} />
             <Route path="home/:id" element={<DetailPage />} />
             <Route path="mypage" element={<MyPage />} />
-            {/* <Route path="mypage/:id" element={<UpdatePostPage />} /> */}
+            <Route path="mypage/:id" element={<UpdatePostPage />} />
             <Route path="myprofile" element={<MyProfilePage />} />
             <Route path="post" element={<PostPage />} />
             <Route path="list" element={<ListPage />} />
