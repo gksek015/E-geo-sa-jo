@@ -1,13 +1,10 @@
 import { create } from 'zustand';
 import supabase from '../supabase/supabaseClient';
 import { toast } from 'react-toastify';
-// import useAuthStore from '../../zustand/useAuthStore';
 
 export const useCommentStore = create((set, get) => ({
-  // const { user } = useAuthStore();
   commentData: [],
   commentContent: '',
-  // commentCounter: 0,
 
   setCommentContent: (content) => set({ commentContent: content }),
   setCommentData: (commentData) => set({ commentData }),
@@ -17,13 +14,10 @@ export const useCommentStore = create((set, get) => ({
       .from('comments')
       .select('*, users!comments_user_id_fkey(nick_name, profile_image)')
       .eq('store_id', storeId);
-    console.log(data);
     if (error) {
       console.error('Error fetching comments:', error);
     } else {
       set({ commentData: data });
-      // const totalComments = data.length;
-      // set({ commentCounter: totalComments });
     }
   },
 
@@ -64,7 +58,6 @@ export const useCommentStore = create((set, get) => ({
     if (error) {
       console.error('Error deleting comment:', error);
     } else {
-      // setCommentData([...commentData, ...data]);
       fetchCommentsData(id);
     }
   }
