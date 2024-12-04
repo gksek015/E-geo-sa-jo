@@ -3,7 +3,7 @@ import { usePostStore } from '../../zustand/usePostStore';
 import PostMap from './PostMap';
 import supabase from '../../supabase/supabaseClient';
 import styled from 'styled-components';
-import { getId } from '../../api/auth';
+import { getId } from '../../api/authApi';
 
 const Wrapper = styled.div`
   display: flex;

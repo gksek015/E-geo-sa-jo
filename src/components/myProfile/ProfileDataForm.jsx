@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { updateNickname } from '../../api/profile';
+import { updateNickname } from '../../api/profileApi';
 import { toast } from 'react-toastify';
-import { deleteUser, updatePassword } from '../../api/auth';
+import { deleteUser, updatePassword } from '../../api/authApi';
 import { IoLogOutOutline } from 'react-icons/io5';
 
 const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
@@ -15,17 +15,14 @@ const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
   const handleNicknameChange = useCallback(
     async (e) => {
       e.preventDefault();
-
       if (!newNickname || newNickname === currentNickname) {
         toast.warning('변경할 닉네임을 입력해주세요!');
         return;
       }
-
       const isSuccess = await updateNickname(newNickname);
       if (!isSuccess) {
         return;
       }
-
       setCurrentNickname(newNickname);
       toast.success('닉네임이 변경되었습니다.');
     },
@@ -54,7 +51,10 @@ const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
   const handleDeleteAccount = useCallback(async () => {
     const confirmed = window.confirm('정말로 계정을 삭제하시겠습니까?');
     if (!confirmed) return;
-    await deleteUser();
+    const isSuccess = await deleteUser();
+    if (!isSuccess) {
+      return;
+    }
     toast.success('계정이 삭제되었습니다.');
     navigate('/');
   }, [navigate]);

@@ -1,7 +1,7 @@
 import supabase from '../supabase/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import { getId } from './auth';
+import { getId } from './authApi';
 
 // 유저 정보 불러오기
 export const fetchUserProfile = async () => {
