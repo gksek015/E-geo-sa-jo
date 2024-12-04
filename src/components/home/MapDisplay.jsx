@@ -23,14 +23,14 @@ const MapView = ({ center, bounds, markers, isLoading, locationError, onMarkerCl
       {/* 현재 위치를 표시하는 기본 마커 */}
       {!markers.length && (
         <MapMarker position={center}>
-          <div style={{ padding: '5px', color: '#000' }}>현재위치</div>
+          <div style={{ padding: '5px', color: '#2e2e2e', marginRight: '-20px' }}>현재위치</div>
         </MapMarker>
       )}
 
       {/* 검색된 장소를 표시하는 마커 */}
       {markers.map((marker, index) => (
         <MapMarker key={index} position={{ lat: marker.lat, lng: marker.lng }} onClick={() => onMarkerClick(marker)}>
-          {info?.content === marker.content && <div style={{ color: '#000' }}>{marker.content}</div>}
+          {info?.content === marker.content && <div style={{ color: '#2e2e2e' }}>{marker.content}</div>}
         </MapMarker>
       ))}
     </Map>
