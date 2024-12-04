@@ -1,7 +1,7 @@
 import supabase from '../supabase/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import { getId } from './auth';
+import { getId } from './authApi';
 
 // 유저 정보 불러오기
 export const fetchUserProfile = async () => {
@@ -62,7 +62,7 @@ export const updateProfileImage = async (file) => {
   return imageUrl;
 };
 
-// storage public 에서 default image 불렁오기
+// storage public 에서 default image 불러오기
 export const fetchDefaultImage = () => {
   const { data } = supabase.storage.from('profile_image').getPublicUrl('default.png');
   const defaultImageUrl = data.publicUrl;
