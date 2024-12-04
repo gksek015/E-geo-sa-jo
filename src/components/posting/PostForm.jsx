@@ -93,11 +93,11 @@ const PostForm = () => {
 export default PostForm;
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #fff;
+display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  padding: 20px; /* 내부 여백 */
+  background-color: #f9f9f9; /* 배경색 설정 */
 `;
 
 const Container = styled.div`

@@ -114,10 +114,10 @@ export default PostUpdateDelete;
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #fff;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  padding: 20px;
+  background-color: #f9f9f9; 
 `;
 
 const Container = styled.div`
