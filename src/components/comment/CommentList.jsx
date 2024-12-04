@@ -10,7 +10,6 @@ function CommentList() {
   const { id } = useParams();
 
   useEffect(() => {
-    console.log('list', id);
     fetchCommentsData(id);
   }, []); //commentData
 

@@ -14,7 +14,6 @@ const useAuthStore = create((set) => ({
         error
       } = await supabase.auth.getUser();
       if (error) throw error;
-      console.log(user);
       if (user) {
         const { data, error: profileError } = await supabase
           .from('users')
@@ -24,7 +23,6 @@ const useAuthStore = create((set) => ({
 
         if (profileError) throw profileError;
 
-        console.log(data);
         set({ user: data });
       }
     } catch (error) {
