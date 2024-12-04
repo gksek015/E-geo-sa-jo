@@ -3,10 +3,19 @@ import useLikesData from '../../hooks/useLikesData';
 import useLikesStore from '../../zustand/useLikesStore';
 import styled from 'styled-components';
 import { useCommentStore } from '../../zustand/useCommentStore';
+import { useParams } from 'react-router-dom';
+import useAuthStore from '../../zustand/useAuthStore';
 
 function InteractionComponent() {
-  const { likes, isLiked, handleLike } = useLikesData();
-  const { commentCounter } = useCommentStore();
+  const { id } = useParams();
+  const { likes, isLiked, handleLike, fetchLikes } = useLikesData(id);
+  const { fetchCommentsData, commentData } = useCommentStore();
+  const { user } = useAuthStore();
+
+  useEffect(() => {
+    console.log('댓글 카운트', id);
+    fetchCommentsData(id);
+  }, [user]);
   //   const [commentCounter, StoreCommentCounter] = useState(0);
 
   //   주스탠드
@@ -14,18 +23,22 @@ function InteractionComponent() {
 
   //   useEffect(() => {
   //     fetchLikes('49aea70d-a279-4717-a328-529adf49d39b');
-  //   }, [fetchLikes]);
+  //   }, [user]);
 
   //   const handleLike = (e) => {
   //     e.preventDefault();
   //     handleLikes('49aea70d-a279-4717-a328-529adf49d39b');
   //   };
 
+  useEffect(() => {
+    fetchLikes();
+  }, [user]);
+
   return (
     <>
       <InteractionContainer>
         <div className="interaction">
-          <ActionCommentCounter>💬 {commentCounter}</ActionCommentCounter>
+          <ActionCommentCounter>💬 {commentData.length}</ActionCommentCounter>
         </div>
         <div className="interaction">
           <ActionButton onClick={handleLike}>{isLiked ? '❤️' : '🤍'}</ActionButton>

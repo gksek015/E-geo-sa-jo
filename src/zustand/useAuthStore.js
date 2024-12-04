@@ -24,6 +24,7 @@ const useAuthStore = create((set) => ({
 
         if (profileError) throw profileError;
 
+        console.log(data);
         set({ user: data });
       }
     } catch (error) {

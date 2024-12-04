@@ -6,12 +6,11 @@ export const useDetailStore = create((set) => ({
   isLoding: true,
   error: null,
 
-  fetchStoreData: async (testStoreId) => {
+  fetchStoreData: async (id) => {
     try {
-      const { data, error } = await supabase.from('stores').select('*').eq('id', testStoreId);
+      const { data, error } = await supabase.from('stores').select('*').eq('id', id);
       if (error) throw error;
       set({ storeData: data, isLoding: false });
-      console.log('useDetailStore', data);
     } catch (error) {
       set({ error: error.message, isLoding: false });
     }
