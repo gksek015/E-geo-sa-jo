@@ -12,31 +12,39 @@ const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
   const navigate = useNavigate();
 
   // 기존 닉네임 불러오기 및 새로운 닉네임 변경 로직
-  const handleNicknameChange = useCallback(async (e) => {
-    e.preventDefault();
+  const handleNicknameChange = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    if (!newNickname || newNickname === currentNickname) {
-      toast.warning('변경할 닉네임을 입력해주세요!');
-      return;
-    }
-    await checkExistingNickname(newNickname);
-    await updateNickname(newNickname);
-    setCurrentNickname(newNickname);
-    toast.success('닉네임이 변경되었습니다.');
-  },[newNickname, currentNickname, setCurrentNickname]);
+      if (!newNickname || newNickname === currentNickname) {
+        toast.warning('변경할 닉네임을 입력해주세요!');
+        return;
+      }
+      await checkExistingNickname(newNickname);
+      await updateNickname(newNickname);
+      setCurrentNickname(newNickname);
+      toast.success('닉네임이 변경되었습니다.');
+    },
+    [newNickname, currentNickname, setCurrentNickname]
+  );
 
   // 비밀번호 변경
-  const handlePasswordChange = useCallback(async (e) => {
-    e.preventDefault();
-    if (!newPassword || newPassword.length < 8) {
-      toast.warning('8자 이상의 새로운 비밀번호를 입력하세요!');
-      return;
-    }
-
-    await updatePassword(newPassword);
-    setNewPassword('');
-    toast.success('비밀번호가 변경되었습니다.');
-  }, [newPassword]);
+  const handlePasswordChange = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (!newPassword || newPassword.length < 8) {
+        toast.warning('8자 이상의 새로운 비밀번호를 입력하세요!');
+        return;
+      }
+      const isSuccess = await updatePassword(newPassword);
+      if (!isSuccess) {
+        return;
+      }
+      setNewPassword('');
+      toast.success('비밀번호가 변경되었습니다.');
+    },
+    [newPassword]
+  );
 
   // 계정 삭제
   const handleDeleteAccount = useCallback(async () => {
@@ -49,26 +57,24 @@ const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
 
   return (
     <>
-      <InputGroup>
-        <div>
-          <input
-            type="text"
-            value={newNickname || currentNickname || ''}
-            placeholder="닉네임"
-            onChange={(e) => setNewNickname(e.target.value)}
-            onFocus={() => setCurrentNickname('')}
-          />
-          <NicknameButton onClick={handleNicknameChange}>닉네임 변경</NicknameButton>
-        </div>
-        <div>
-          <input
-            type="password"
-            value={newPassword}
-            placeholder="새 비밀번호"
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <PasswordButton onClick={handlePasswordChange}>비밀번호 변경</PasswordButton>
-        </div>
+      <InputGroup onSubmit={handleNicknameChange}>
+        <input
+          type="text"
+          value={newNickname || currentNickname || ''}
+          placeholder="닉네임"
+          onChange={(e) => setNewNickname(e.target.value)}
+          onFocus={() => setCurrentNickname('')}
+        />
+        <NicknameButton type="submit">닉네임 변경</NicknameButton>
+      </InputGroup>
+      <InputGroup onSubmit={handlePasswordChange}>
+        <input
+          type="password"
+          value={newPassword}
+          placeholder="새 비밀번호"
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <PasswordButton type="submit">비밀번호 변경</PasswordButton>
       </InputGroup>
       <DeleteButton type="button" onClick={handleDeleteAccount}>
         <IoLogOutOutline />
@@ -83,7 +89,6 @@ export default ProfileDataForm;
 const InputGroup = styled.form`
   margin-top: 28px;
   display: flex;
-  flex-direction: column;
   gap: 27px;
 
   div {
