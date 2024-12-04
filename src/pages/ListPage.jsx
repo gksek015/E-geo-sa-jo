@@ -36,7 +36,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: 'Jalnan 2';
+  font-family: 'yg-jalnan';
   font-weight: 400;
   font-size: 36px;
   margin-bottom: 20px;
@@ -75,7 +75,7 @@ const Card = styled.div`
 `;
 
 const Rank = styled.div`
-  font-family: 'Jalnan 2';
+  font-family: 'yg-jalnan';
   font-size: 36px;
   font-weight: 400;
   color: #b47b46;
@@ -83,7 +83,7 @@ const Rank = styled.div`
 `;
 
 const CardTitle = styled.h2`
-  font-family: 'Jalnan 2';
+  font-family: 'yg-jalnan';
   font-size: 24px;
   font-weight: 400;
   color: #b47b46;
@@ -91,7 +91,7 @@ const CardTitle = styled.h2`
 `;
 
 const CardAddress = styled.p`
-  font-family: 'Jalnan 2';
+  font-family: 'yg-jalnan';
   font-size: 18px;
   font-weight: 400;
   color: #666666;

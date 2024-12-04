@@ -19,6 +19,12 @@ const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
         toast.warning('변경할 닉네임을 입력해주세요!');
         return;
       }
+
+      if (newNickname.length < 2) {
+        toast.warning('2자 이상의 닉네임을 입력해주세요!');
+        return;
+      }
+
       const isSuccess = await updateNickname(newNickname);
       if (!isSuccess) {
         return;
