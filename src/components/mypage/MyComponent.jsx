@@ -1,25 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import styled from 'styled-components';
-import supabase from '../../supabase/supabaseClient';
-
-const fetchDefaultImageUrl = () => {
-  const { data } = supabase.storage.from('post_image').getPublicUrl('default.png');
-  return data?.publicUrl || null;
-};
-
-const fetchMyData = async (userId) => {
-  const { data, error } = await supabase
-    .from('stores')
-    .select('name, map_address, category')
-    .eq('user_id', userId); // 로그인한 사용자의 게시글만 가져오기
-  if (error) {
-    console.error('Error fetching user data:', error);
-    return [];
-  }
-  return data;
-};
+import { TiDelete } from 'react-icons/ti';
+import {
+  fetchDefaultImageUrl,
+  fetchMyData,
+  deletePost,
+  fetchUserData,
+} from '../../api/myPageApi';
 
 const MyComponent = () => {
+  const navigate = useNavigate();
   const [stores, setStores] = useState([]);
   const [filteredStores, setFilteredStores] = useState([]);
   const [categories] = useState(['가게 종류', '노상', '카페', '편의점', '기타']);
@@ -33,18 +24,20 @@ const MyComponent = () => {
     };
 
     const loadData = async () => {
-      // 현재 로그인한 사용자 정보 가져오기
-      const { data: user, error } = await supabase.auth.getUser();
-      if (error || !user) {
-        console.error('Error fetching user:', error);
-        return;
-      }
+      try {
+        const user = await fetchUserData(); 
+        if (!user) {
+          console.warn('No authenticated user found.');
+          return;
+        }
 
-      // 사용자 ID로 데이터 가져오기
-      const userId = user.id;
-      const fetchedData = await fetchMyData(userId);
-      setStores(fetchedData || []);
-      setFilteredStores(fetchedData || []);
+        const userId = user.id; 
+        const fetchedData = await fetchMyData(userId); 
+        setStores(fetchedData || []);
+        setFilteredStores(fetchedData || []);
+      } catch (err) {
+        console.error('Unexpected error:', err);
+      }
     };
 
     loadDefaultImage();
@@ -63,6 +56,23 @@ const MyComponent = () => {
     }
   };
 
+  const handleDelete = async (postId) => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      const success = await deletePost(postId);
+      if (success) {
+        setStores(stores.filter((store) => store.id !== postId));
+        setFilteredStores(filteredStores.filter((store) => store.id !== postId));
+        alert('삭제되었습니다.');
+      } else {
+        alert('삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  const handleCardClick = (postId) => {
+    navigate(`/home/${postId}`);
+  };
+
   return (
     <PageContainer>
       <HeaderContainer>
@@ -79,8 +89,16 @@ const MyComponent = () => {
       </HeaderContainer>
       <StoreContainer>
         {filteredStores.length > 0 ? (
-          filteredStores.map((store, index) => (
-            <StoreCard key={index}>
+          filteredStores.map((store) => (
+            <StoreCard key={store.id} onClick={() => handleCardClick(store.id)}>
+              <DeleteButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(store.id);
+                }}
+              >
+                <TiDelete size={30} />
+              </DeleteButton>
               <StoreImage src={defaultImage} alt="default" />
               <StoreName>{store.name || '이름 없음'}</StoreName>
               <StoreAddress>{store.map_address || '주소 없음'}</StoreAddress>
@@ -97,7 +115,6 @@ const MyComponent = () => {
 
 export default MyComponent;
 
-// 기존 스타일 코드는 유지
 const PageContainer = styled.div`
   width: 1400px;
   margin: 0 auto;
@@ -134,7 +151,7 @@ const CategorySelector = styled.select`
   background-color: var(--button--color);
   cursor: pointer;
 
-  &:hover {
+&:hover {
     border-color: #888;
   }
 `;
@@ -157,12 +174,28 @@ const StoreCard = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
+  position: relative;
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+  cursor: pointer;
 
   &:hover {
-    background-color: #f0e6d2;
+    background-color: white;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     transform: translateY(-5px);
+  }
+`;
+
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 15px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #B47B46;
+
+  &:hover {
+    color: #d32f2f;
   }
 `;
 
@@ -194,9 +227,10 @@ const StoreCategory = styled.p`
 `;
 
 const NoDataMessage = styled.p`
+  text-align: center;
   grid-column: span 4;
   text-align: center;
-  font-size: 18px;
+  font-size: 25px;
   color: #888;
-  margin-top: 20px;
+  margin-top: 200px;
 `;
