@@ -1,7 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const StoreDetail = ({ store }) => {
   // const { tsetId, id } = useStoreData();
+  const navigate = useNavigate();
+
+  const handleStoreUpdata = () => {};
 
   const handleShowMap = (e, location) => {
     e.preventDefault();
@@ -14,6 +18,7 @@ const StoreDetail = ({ store }) => {
 
   return (
     <>
+      <UpdataButton onClick={handleStoreUpdata}>수정하기</UpdataButton>
       <InputGroup>
         <p>{store.name}</p>
       </InputGroup>

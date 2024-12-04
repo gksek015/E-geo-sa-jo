@@ -5,7 +5,6 @@ export const useDetailStore = create((set) => ({
   storeData: null,
   isLoding: true,
   error: null,
-  testStoreId: '49aea70d-a279-4717-a328-529adf49d39b',
 
   fetchStoreData: async (testStoreId) => {
     try {

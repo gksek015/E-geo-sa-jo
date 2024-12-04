@@ -10,7 +10,6 @@ function StoreInfo() {
 
   // 주스탠드
   const { fetchStoreData, storeData, isLoading, error, id, testId } = useDetailStore();
-  console.log(storeData);
 
   const testStoreId = '49aea70d-a279-4717-a328-529adf49d39b';
   useEffect(() => {
