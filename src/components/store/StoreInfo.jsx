@@ -1,19 +1,17 @@
 import styled from 'styled-components';
-import useStoreData from '../../hooks/useStoreData';
 import StoreDetail from './StoreDetail';
 import { useDetailStore } from '../../zustand/useDetailStore';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 function StoreInfo() {
-  // 커스텀훅
-  // const { storeData, isLoading, error, id, testId } = useStoreData();
-
   // 주스탠드
-  const { fetchStoreData, storeData, isLoading, error, id, testId } = useDetailStore();
+  const { fetchStoreData, storeData, isLoading, error } = useDetailStore();
+  // const testStoreId = '49aea70d-a279-4717-a328-529adf49d39b';
+  const { id } = useParams();
 
-  const testStoreId = '49aea70d-a279-4717-a328-529adf49d39b';
   useEffect(() => {
-    fetchStoreData(testStoreId);
+    fetchStoreData(id);
   }, []);
 
   if (isLoading) return <div>로딩 중...</div>;
@@ -21,7 +19,7 @@ function StoreInfo() {
 
   return (
     <>
-      <StoreInfoContainer key={testId}>
+      <StoreInfoContainer key={id}>
         {storeData?.map((store) => (
           <StoreDetail store={store} />
         ))}

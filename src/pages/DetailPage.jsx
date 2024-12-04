@@ -11,17 +11,13 @@ const DetailPage = () => {
         <StoreHeader>
           <h1>
             붕빵집 소개
-            <img src="/fish-icon.png" alt="붕어빵 아이콘" />
+            <img src="/images/image.png" alt="붕어빵 아이콘" />
           </h1>
         </StoreHeader>
-
         <StoreCommentContainer>
           <StoreInfo />
-
           <CommentContainer>
-            <ChatContainer>
-              <CommentList />
-            </ChatContainer>
+            <CommentList />
             <CommentForm />
             <InteractionComponent />
           </CommentContainer>
@@ -85,12 +81,6 @@ const CommentContainer = styled.div`
     align-items: center;
     gap: 5px;
   }
-`;
-
-const ChatContainer = styled.div`
-  padding: 20px;
-  max-height: 100%;
-  overflow: scroll;
 `;
 
 export default DetailPage;

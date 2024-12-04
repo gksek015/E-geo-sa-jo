@@ -1,51 +1,54 @@
 import styled from 'styled-components';
-import useCommentsData from '../../hooks/useCommentsData';
 import { toast } from 'react-toastify';
 import useAuthStore from '../../zustand/useAuthStore';
 import { useCommentStore } from '../../zustand/useCommentStore';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 function CommentList() {
   const { fetchCommentsData, commentData, deleteComment } = useCommentStore();
-  const { user } = useAuthStore();
-  console.log(user);
+  const { id } = useParams();
 
   useEffect(() => {
-    fetchCommentsData();
-  }, []);
-
-  const handleEdit = (comment) => {};
+    console.log('list', id);
+    fetchCommentsData(id);
+  }, []); //commentData
 
   const handleDelete = (commentId) => {
-    console.log(commentId);
     if (toast.success('댓글이 삭제되었습니다.')) {
-      deleteComment(commentId);
+      deleteComment(commentId, id);
     }
   };
 
   return (
     <>
-      {commentData.map((comment) => (
-        <ChatBox key={comment.id}>
-          <MessageHeader>
-            <ProfileImage />
-            <Username>{comment.user_nick_name}</Username>
-          </MessageHeader>
-          <ChatMessage>
-            <MessageContent>{comment.content}</MessageContent>
-          </ChatMessage>
-          <MessageActions>
-            <ActionButton onClick={() => handleEdit(comment)}>✏️</ActionButton>
-            <ActionButton onClick={() => handleDelete(comment.id)}>🗑️</ActionButton>
-          </MessageActions>
-        </ChatBox>
-      ))}
+      <ChatContainer>
+        {commentData.map((comment) => (
+          <ChatBox key={comment.id}>
+            <MessageHeader>
+              <ProfileImage src={comment.users.profile_image} alt="유저프로필이미지" />
+              <Username>{comment.users.nick_name}</Username>
+            </MessageHeader>
+            <ChatMessage>
+              <MessageContent>{comment.content}</MessageContent>
+            </ChatMessage>
+            <MessageActions>
+              <ActionButton onClick={() => handleDelete(comment.id)}>🗑️</ActionButton>
+            </MessageActions>
+          </ChatBox>
+        ))}
+      </ChatContainer>
     </>
   );
 }
+const ChatContainer = styled.div`
+  padding: 20px;
+  max-height: 100%;
+  overflow: scroll;
+`;
 
 const ChatBox = styled.div`
-  margin: 20px;
+  margin: 20px;ß
 `;
 
 const MessageHeader = styled.div`
@@ -55,7 +58,7 @@ const MessageHeader = styled.div`
   margin-bottom: 8px;
 `;
 
-const ProfileImage = styled.div`
+const ProfileImage = styled.img`
   width: 36px;
   height: 36px;
   border-radius: 50%;

@@ -7,12 +7,11 @@ const useLikesStore = create((set, get) => ({
   likes: 0,
   isLiked: false,
 
-  fetchLikes: async (testId = '49aea70d-a279-4717-a328-529adf49d39b') => {
+  fetchLikes: async (storeId) => {
     const { user } = useAuthStore.getState();
-    console.log(user);
 
-    if (testId) {
-      const { data, error } = await supabase.from('likes').select('count').eq('store_id', testId);
+    if (storeId) {
+      const { data, error } = await supabase.from('likes').select('count').eq('store_id', storeId);
 
       if (error) {
         console.error('Error fetching likes:', error.message);
@@ -25,9 +24,8 @@ const useLikesStore = create((set, get) => ({
         const { data: userLike } = await supabase
           .from('likes')
           .select('*')
-          .eq('store_id', testId)
-          .eq('user_id', user.id)
-          .single();
+          .eq('store_id', storeId)
+          .eq('user_id', user.id);
 
         set({ isLiked: !!userLike });
       }
@@ -39,7 +37,6 @@ const useLikesStore = create((set, get) => ({
     const { isLiked } = get();
 
     if (!user) {
-      console.log(user);
       toast.error('로그인이 필요합니다.');
       return;
     }
@@ -53,7 +50,7 @@ const useLikesStore = create((set, get) => ({
         await supabase.from('likes').insert([
           {
             user_id: user.id,
-            store_id: testId,
+            store_id: storeId,
             count: 1
           }
         ]);

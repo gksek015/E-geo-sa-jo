@@ -28,7 +28,6 @@ const useCommentsData = () => {
 
   const handleAddComment = async (e) => {
     e.preventDefault();
-    console.log('댓글작성 버튼 클릭');
 
     if (!commentContent.trim()) return;
 

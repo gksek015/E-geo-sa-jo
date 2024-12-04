@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react';
-import useStoreData from './useStoreData';
 import { toast } from 'react-toastify';
 import supabase from '../supabase/supabaseClient';
 import useAuthStore from '../zustand/useAuthStore';
 
-const useLikesData = () => {
-  const { tsetId } = useStoreData();
+const useLikesData = (storeId) => {
   const { user } = useAuthStore();
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 
-  useEffect(() => {
-    fetchLikes();
-  }, [tsetId, user]);
+  // useEffect(() => {
+  //   fetchLikes();
+  // }, []);
 
   const fetchLikes = async () => {
-    if (tsetId) {
-      const { data, error } = await supabase.from('likes').select('count').eq('store_id', tsetId);
+    if (storeId) {
+      const { data, error } = await supabase.from('likes').select('count').eq('store_id', storeId);
 
       if (error) {
         console.error('Error fetching likes:', error.message);
@@ -24,16 +22,15 @@ const useLikesData = () => {
         const totalLikes = data.reduce((sum, item) => sum + item.count, 0);
         setLikes(totalLikes);
       }
-
+      console.log(user);
       if (user) {
         const { data: userLike } = await supabase
           .from('likes')
           .select('*')
-          .eq('store_id', tsetId)
-          .eq('user_id', user.id)
-          .single();
-
-        setIsLiked(!!userLike);
+          .eq('store_id', storeId)
+          .eq('user_id', user.id);
+        console.log('userLike', userLike);
+        setIsLiked(!!userLike.length);
       }
     }
   };
@@ -46,7 +43,7 @@ const useLikesData = () => {
 
     try {
       if (isLiked) {
-        await supabase.from('likes').delete().eq('store_id', tsetId).eq('user_id', user.id);
+        await supabase.from('likes').delete().eq('store_id', storeId).eq('user_id', user.id);
         setLikes((prev) => prev - 1);
         setIsLiked(false);
         toast.success('좋아요가 취소되었습니다.');
@@ -54,7 +51,7 @@ const useLikesData = () => {
         await supabase.from('likes').insert([
           {
             user_id: user.id,
-            store_id: tsetId,
+            store_id: storeId,
             count: 1
           }
         ]);
@@ -68,7 +65,7 @@ const useLikesData = () => {
     }
   };
 
-  return { likes, isLiked, handleLike };
+  return { likes, isLiked, handleLike, fetchLikes };
 };
 
 export default useLikesData;
