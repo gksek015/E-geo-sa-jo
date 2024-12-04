@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { checkExistingNickname, updateNickname } from '../../api/profile';
+import { updateNickname } from '../../api/profile';
 import { toast } from 'react-toastify';
 import { deleteUser, updatePassword } from '../../api/auth';
 import { IoLogOutOutline } from 'react-icons/io5';
@@ -20,8 +20,12 @@ const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
         toast.warning('변경할 닉네임을 입력해주세요!');
         return;
       }
-      await checkExistingNickname(newNickname);
-      await updateNickname(newNickname);
+
+      const isSuccess = await updateNickname(newNickname);
+      if (!isSuccess) {
+        return;
+      }
+
       setCurrentNickname(newNickname);
       toast.success('닉네임이 변경되었습니다.');
     },
@@ -60,10 +64,9 @@ const ProfileDataForm = ({ currentNickname, setCurrentNickname }) => {
       <InputGroup onSubmit={handleNicknameChange}>
         <input
           type="text"
-          value={newNickname || currentNickname || ''}
+          defaultValue={currentNickname}
           placeholder="닉네임"
           onChange={(e) => setNewNickname(e.target.value)}
-          onFocus={() => setCurrentNickname('')}
         />
         <NicknameButton type="submit">닉네임 변경</NicknameButton>
       </InputGroup>
