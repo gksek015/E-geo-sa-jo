@@ -29,19 +29,18 @@ const UpdateMap = () => {
 
     waitForKakaoMaps()
       .then((kakao) => {
-        console.log('Kakao Maps SDK 로드 성공:', kakao); //디버깅용
 
         const mapContainer = document.getElementById('map');
         const initialLocation = formData.location;
         const mapOption = {
-          center: new kakao.maps.LatLng(initialLocation.lat, initialLocation.lng), // 로케이션 컬럼 중 한 좌표와 연결해보는게 첫번째 // 제이슨파싱
+          center: new kakao.maps.LatLng(initialLocation?.lat, initialLocation?.lng), // 로케이션 컬럼 중 한 좌표와 연결해보는게 첫번째 // 제이슨파싱
           level: 3
         };
 
         const map = new kakao.maps.Map(mapContainer, mapOption);
         const geocoder = new kakao.maps.services.Geocoder();
         const marker = new kakao.maps.Marker({
-          position: new kakao.maps.LatLng(initialLocation.lat, initialLocation.lng),
+          position: new kakao.maps.LatLng(initialLocation?.lat, initialLocation?.lng),
           map: map
         });
         const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
@@ -71,13 +70,7 @@ const UpdateMap = () => {
             } else {
               console.error('주소 변환 실패:', status);
             }
-            // marker.setPosition(coord);
-            // marker.setMap(map);
 
-            // onLocationChanging({
-            //   lat: coords.getLat(),
-            //   lng: coords.getLng()
-            // });
           });
         });
       })

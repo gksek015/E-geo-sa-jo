@@ -12,7 +12,7 @@ export const usePostStore = create((set) => ({
     set((state) => ({
       formData: { ...state.formData, [key]: value }
     })),
-  restForm: () =>
+  resetForm: () =>
     set({
       formData: {
         name: '',

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { usePostStore } from '../../zustand/usePostStore';
 
 const PostMap = () => {
-  const { formData, setFormData } = usePostStore();
+  const { setFormData } = usePostStore();
 
   useEffect(() => {
     const waitForKakaoMaps = () => {
@@ -29,7 +29,6 @@ const PostMap = () => {
 
     waitForKakaoMaps()
       .then((kakao) => {
-        console.log('Kakao Maps SDK 로드 성공:', kakao); //디버깅용
 
         const mapContainer = document.getElementById('map');
         const mapOption = {
