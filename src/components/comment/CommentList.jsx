@@ -49,7 +49,7 @@ const ChatBox = styled.div`
 `;
 
 const MessageHeader = styled.div`
-  width: 100%;
+  width: 50%;
   display: flex;
   align-items: center;
   margin-bottom: 8px;
@@ -70,7 +70,7 @@ const Username = styled.span`
 
 const ChatMessage = styled.div`
   position: relative;
-  padding: 16px;
+  padding: 10px;
   background: #ffffff;
   border: 1px solid #b47b46;
   border-radius: 12px;

@@ -2,11 +2,9 @@ import styled from 'styled-components';
 import CommentForm from '../components/comment/commentForm';
 import CommentList from '../components/comment/CommentList';
 import StoreInfo from '../components/store/StoreInfo';
-import useLikesData from '../hooks/useLikesData';
+import InteractionComponent from '../components/comment/InteractionComponent';
 
 const DetailPage = () => {
-  const { likes, isLiked, handleLike } = useLikesData();
-
   return (
     <StoreDetailContainer>
       <StoreCard>
@@ -19,22 +17,13 @@ const DetailPage = () => {
 
         <StoreCommentContainer>
           <StoreInfo />
+
           <CommentContainer>
             <ChatContainer>
               <CommentList />
-              <CommentForm />
             </ChatContainer>
-
-            <InteractionContainer>
-              <div className="interaction">
-                <ActionButton>💬</ActionButton>
-                <span>1</span>
-              </div>
-              <div className="interaction">
-                <ActionButton onClick={handleLike}>{isLiked ? '❤️' : '🤍'}</ActionButton>
-                <span>{likes}</span>
-              </div>
-            </InteractionContainer>
+            <CommentForm />
+            <InteractionComponent />
           </CommentContainer>
         </StoreCommentContainer>
       </StoreCard>
@@ -82,7 +71,7 @@ const StoreCommentContainer = styled.div`
 
 const CommentContainer = styled.div`
   width: 450px;
-  height: 350px;
+  height: 400px;
   display: flex;
   gap: 20px;
   margin: 20px 30px;
@@ -98,32 +87,10 @@ const CommentContainer = styled.div`
   }
 `;
 
-const InteractionContainer = styled.div`
-  display: flex;
-  gap: 20px;
-  margin-top: 15px;
-  height: 50px;
-  justify-content: space-between;
-
-  .interaction {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-  }
-`;
-
 const ChatContainer = styled.div`
   padding: 20px;
-  max
-`;
-
-const ActionButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #666666;
-  padding: 4px;
+  max-height: 100%;
+  overflow: scroll;
 `;
 
 export default DetailPage;

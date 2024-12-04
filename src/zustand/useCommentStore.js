@@ -8,8 +8,9 @@ export const useCommentStore = create((set, get) => ({
   // console.log(user.id);
   commentData: [],
   commentContent: '',
-  setCommentContent: (content) => set({ commentContent: content }),
+  commentCounter: 0,
 
+  setCommentContent: (content) => set({ commentContent: content }),
   setCommentData: (commentData) => set({ commentData }),
 
   fetchCommentsData: async (storeId = '49aea70d-a279-4717-a328-529adf49d39b') => {
@@ -20,6 +21,8 @@ export const useCommentStore = create((set, get) => ({
       console.error('Error fetching comments:', error);
     } else {
       set({ commentData: data });
+      const totalComments = data.length;
+      set({ commentCounter: totalComments });
     }
   },
 
@@ -78,5 +81,7 @@ export const useCommentStore = create((set, get) => ({
     } else {
       fetchCommentsData();
     }
-  }
+  },
+
+  couteComment: async () => {}
 }));
