@@ -1,7 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-import supabase from "../../supabase/supabaseClient";
+import styled from 'styled-components';
+import supabase from '../../supabase/supabaseClient';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -48,20 +47,20 @@ const HeaderContainer = styled.header`
 
 const LogoLink = styled(Link)`
   text-decoration: none;
-  color: inherit; 
+  color: inherit;
 `;
 
 const HeaderLogo = styled.div`
   display: flex;
-  align-items: center; 
-  gap: 10px; 
-  cursor: pointer; 
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 `;
 
 const HeaderText = styled.p`
   font-family: 'yg-jalnan';
-  color: #B47B46;
-  font-size: 28px; 
+  color: #b47b46;
+  font-size: 28px;
 `;
 
 const HeaderImage = styled.img`

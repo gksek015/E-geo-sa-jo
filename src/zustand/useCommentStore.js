@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import supabase from '../supabase/supabaseClient';
+
 import { toast } from 'react-toastify';
+
+import supabase from '../supabase/supabaseClient';
 
 export const useCommentStore = create((set, get) => ({
   commentData: [],

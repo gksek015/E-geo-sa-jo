@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { IoMdSearch } from 'react-icons/io';
 import { toast } from 'react-toastify';
+import { IoMdSearch } from 'react-icons/io';
 
 const SearchBar = ({ searchTerm, setSearchTerm, onSearch }) => {
   const handleSubmit = (e) => {

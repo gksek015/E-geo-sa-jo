@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import supabase from '../supabase/supabaseClient';
 import useAuthStore from '../zustand/useAuthStore';
@@ -7,10 +7,6 @@ const useLikesData = (storeId) => {
   const { user } = useAuthStore();
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-
-  // useEffect(() => {
-  //   fetchLikes();
-  // }, []);
 
   const fetchLikes = async () => {
     if (storeId) {
