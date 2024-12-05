@@ -5,6 +5,7 @@ import supabase from '../../supabase/supabaseClient';
 import styled from 'styled-components';
 import { getId } from '../../api/authApi';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const PostForm = () => {
   const { formData, setFormData, resetForm } = usePostStore();
@@ -31,9 +32,9 @@ const PostForm = () => {
       const { error } = await supabase.from('stores').insert([formData]);
       if (error) {
         console.error('Supabase 데이터 추가 실패:', error);
-        alert('삽입 실패: ' + error.message);
+        toast('삽입 실패: ' + error.message);
       } else {
-        alert('삽입 성공!');
+        toast('삽입 성공!');
         resetForm();
         navigate('/mypage')
       }

@@ -43,7 +43,6 @@ export const useCommentStore = create((set, get) => ({
       if (data && data.length > 0) {
         setCommentData([...commentData, ...data]);
         setCommentContent('');
-        console.log('Comment added successfully:', data);
       }
       toast.success('댓글이 추가되었습니다.');
     } catch (error) {
