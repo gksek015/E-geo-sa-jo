@@ -1,10 +1,15 @@
-import { useEffect } from 'react';
-import { usePostStore } from '../../zustand/usePostStore';
-import PostMap from './PostMap';
-import supabase from '../../supabase/supabaseClient';
 import styled from 'styled-components';
-import { getId } from '../../api/authApi';
+import PostMap from './PostMap';
+
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import { usePostStore } from '../../zustand/usePostStore';
+
+import { getId } from '../../api/authApi';
+
+import supabase from '../../supabase/supabaseClient';
 
 const PostForm = () => {
   const { formData, setFormData, resetForm } = usePostStore();
@@ -19,6 +24,8 @@ const PostForm = () => {
     };
 
     fetchUserId();
+
+    return () => resetForm();
   }, [setFormData]);
 
   const handleSubmit = async (e) => {
@@ -28,9 +35,9 @@ const PostForm = () => {
       const { error } = await supabase.from('stores').insert([formData]);
       if (error) {
         console.error('Supabase 데이터 추가 실패:', error);
-        alert('삽입 실패: ' + error.message);
+        toast('삽입 실패: ' + error.message);
       } else {
-        alert('삽입 성공!');
+        toast('삽입 성공!');
         resetForm();
         navigate('/mypage');
       }
