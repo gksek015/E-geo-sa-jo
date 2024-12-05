@@ -15,7 +15,8 @@ const useTopLikeData = () => {
     setLoading(true);
     try {
       // 좋아요 데이터 가져오기
-      const { data, error } = await supabase.from('stores').select('id, name, map_address, likes (id)').limit(10);
+      const { data, error } = await supabase.from('stores').select('id, name, map_address, likes (count)'); // 상위 10개만 가져오기
+
       if (error) {
         throw error;
       }
@@ -28,7 +29,8 @@ const useTopLikeData = () => {
           address: store.map_address,
           totalLikes: store.likes.length // likes 배열의 길이로 계산
         }))
-        .sort((a, b) => b.totalLikes - a.totalLikes);
+        .sort((a, b) => b.totalLikes - a.totalLikes)
+        .slice(0, 10);
 
       setTopStores(formattedData);
     } catch (err) {
