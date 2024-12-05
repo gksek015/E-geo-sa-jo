@@ -1,7 +1,7 @@
-import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
 import Header from './Header';
 import Footer from './Footer';
-import styled from 'styled-components';
+import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
@@ -21,10 +21,10 @@ const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f9f9f9; 
+  background-color: #f9f9f9;
 `;
 
 const Content = styled.main`
-  flex: 1; 
+  flex: 1;
   padding: 20px;
 `;

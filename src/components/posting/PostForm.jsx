@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react';
-import { usePostStore } from '../../zustand/usePostStore';
-import PostMap from './PostMap';
-import supabase from '../../supabase/supabaseClient';
 import styled from 'styled-components';
-import { getId } from '../../api/authApi';
+import PostMap from './PostMap';
+
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+import { usePostStore } from '../../zustand/usePostStore';
+
+import { getId } from '../../api/authApi';
+
+import supabase from '../../supabase/supabaseClient';
 
 const PostForm = () => {
   const { formData, setFormData, resetForm } = usePostStore();
@@ -21,9 +25,8 @@ const PostForm = () => {
 
     fetchUserId();
 
-    return () => resetForm()
+    return () => resetForm();
   }, [setFormData]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +39,7 @@ const PostForm = () => {
       } else {
         toast('삽입 성공!');
         resetForm();
-        navigate('/mypage')
+        navigate('/mypage');
       }
     } catch (error) {
       console.error('삽입 중 오류 발생:', error);
@@ -97,7 +100,7 @@ const PostForm = () => {
 export default PostForm;
 
 const Wrapper = styled.div`
-display: flex;
+  display: flex;
   justify-content: center; /* 수평 중앙 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
   padding: 20px; /* 내부 여백 */

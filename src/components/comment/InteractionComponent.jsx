@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import useLikesData from '../../hooks/useLikesData';
-import useLikesStore from '../../zustand/useLikesStore';
 import styled from 'styled-components';
-import { useCommentStore } from '../../zustand/useCommentStore';
+
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCommentStore } from '../../zustand/useCommentStore';
+
+import useLikesData from '../../hooks/useLikesData';
 import useAuthStore from '../../zustand/useAuthStore';
 
 function InteractionComponent() {
@@ -15,19 +16,6 @@ function InteractionComponent() {
   useEffect(() => {
     fetchCommentsData(id);
   }, [user]);
-  //   const [commentCounter, StoreCommentCounter] = useState(0);
-
-  //   주스탠드
-  //   const { likes, isLiked, fetchLikes, handleLikes } = useLikesStore();
-
-  //   useEffect(() => {
-  //     fetchLikes('49aea70d-a279-4717-a328-529adf49d39b');
-  //   }, [user]);
-
-  //   const handleLike = (e) => {
-  //     e.preventDefault();
-  //     handleLikes('49aea70d-a279-4717-a328-529adf49d39b');
-  //   };
 
   useEffect(() => {
     fetchLikes();

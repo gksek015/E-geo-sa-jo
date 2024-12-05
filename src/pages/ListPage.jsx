@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router-dom';
-import useTopLikeData from '../hooks/useTopLikeData';
 import styled from 'styled-components';
+import useTopLikeData from '../hooks/useTopLikeData';
+
+import { useNavigate } from 'react-router-dom';
 
 const ListPage = () => {
   const { topStores } = useTopLikeData();

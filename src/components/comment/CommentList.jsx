@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import { toast } from 'react-toastify';
-import useAuthStore from '../../zustand/useAuthStore';
-import { useCommentStore } from '../../zustand/useCommentStore';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useCommentStore } from '../../zustand/useCommentStore';
 
 function CommentList() {
   const { fetchCommentsData, commentData, deleteComment } = useCommentStore();
