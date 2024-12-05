@@ -19,7 +19,10 @@ const PostForm = () => {
     };
 
     fetchUserId();
+
+    return () => resetForm()
   }, [setFormData]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
