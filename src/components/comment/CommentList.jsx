@@ -43,7 +43,8 @@ function CommentList() {
 const ChatContainer = styled.div`
   padding: 20px;
   max-height: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const ChatBox = styled.div`
