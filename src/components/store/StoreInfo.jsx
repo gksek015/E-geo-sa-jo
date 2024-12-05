@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 import StoreDetail from './StoreDetail';
-import { useDetailStore } from '../../zustand/useDetailStore';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useDetailStore } from '../../zustand/useDetailStore';
 
 function StoreInfo() {
   // 주스탠드
   const { fetchStoreData, storeData, isLoading, error } = useDetailStore();
-  // const testStoreId = '49aea70d-a279-4717-a328-529adf49d39b';
   const { id } = useParams();
 
   useEffect(() => {

@@ -1,7 +1,8 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
+
 import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
 import HomePage from '../pages/HomePage';

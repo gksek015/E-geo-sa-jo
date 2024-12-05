@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 import GlobalStyle from '../styled/GlobalStyle';
+
 import HeroSession from '../components/home/HeroSession';
 import MapDisplay from '../components/home/MapDisplay';
 import SearchBar from '../components/home/SearchBar';
+
 import useUserLocation from '../hooks/useUserLocation';
 import useSearchPlaces from '../hooks/useSearchPlaces';
+
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
@@ -86,7 +89,7 @@ const MapContainer = styled.div`
 `;
 
 const MapTitle = styled.p`
-  font-size: 28px;
+  font-size: 28px;ck
   text-align: center;
   color: var(--font--primary--color);
   margin-bottom: 20px;

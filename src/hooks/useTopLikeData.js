@@ -34,7 +34,6 @@ const useTopLikeData = () => {
 
       setTopStores(formattedData);
     } catch (err) {
-      console.error('Top stores 데이터 가져오기 실패: ', err.message);
       setError(err);
     } finally {
       setLoading(false);

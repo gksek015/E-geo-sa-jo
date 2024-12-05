@@ -1,13 +1,11 @@
-import React from 'react';
 import PostForm from '../components/posting/PostForm';
 
 const PostPage = () => {
   return (
     <div>
-        <PostForm />
+      <PostForm />
     </div>
   );
-
 };
 
 export default PostPage;
