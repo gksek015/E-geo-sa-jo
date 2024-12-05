@@ -1,13 +1,12 @@
-import React from "react";
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const teamMembers = [
-  { name: "한다영", blog: "https://gksekdud12.tistory.com/" },
-  { name: "김지은", blog: "https://zzieni.tistory.com/" },
-  { name: "문다슬", blog: "https://velog.io/@mds6425/posts" },
-  { name: "박준석", blog: "https://velog.io/@bj9322/posts" },
-  { name: "이경민", blog: "https://zzxx66052.tistory.com/" },
-  { name: "정은혜", blog: "https://velog.io/@gracejelly125" },
+  { name: '한다영', blog: 'https://gksekdud12.tistory.com/' },
+  { name: '김지은', blog: 'https://zzieni.tistory.com/' },
+  { name: '문다슬', blog: 'https://velog.io/@mds6425/posts' },
+  { name: '박준석', blog: 'https://velog.io/@bj9322/posts' },
+  { name: '이경민', blog: 'https://zzxx66052.tistory.com/' },
+  { name: '정은혜', blog: 'https://velog.io/@gracejelly125' }
 ];
 
 export default function Footer() {
@@ -22,7 +21,7 @@ export default function Footer() {
         <TeamList>
           {teamMembers.map((member, index) => (
             <TeamMember key={index}>
-              {member.name} -{" "}
+              {member.name} -{' '}
               <BlogLink href={member.blog} target="_blank" rel="noopener noreferrer">
                 블로그
               </BlogLink>
@@ -72,8 +71,8 @@ const FooterInfo = styled.div`
 
 const TeamList = styled.div`
   display: flex;
-  flex-wrap: wrap; 
-  gap: 15px; 
+  flex-wrap: wrap;
+  gap: 15px;
 `;
 
 const TeamMember = styled.div`

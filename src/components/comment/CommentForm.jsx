@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { useCommentStore } from '../../zustand/useCommentStore';
-import useAuthStore from '../../zustand/useAuthStore';
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCommentStore } from '../../zustand/useCommentStore';
+import useAuthStore from '../../zustand/useAuthStore';
 
 function CommentForm() {
   const inputRef = useRef('');
@@ -14,7 +14,9 @@ function CommentForm() {
   const handleAddComment = (e) => {
     e.preventDefault();
     setCommentContent(inputRef.current.value);
+
     addComment(user.id, id);
+    inputRef.current.value = ''; // input 초기화
   };
 
   return (

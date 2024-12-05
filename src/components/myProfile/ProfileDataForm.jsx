@@ -1,8 +1,8 @@
+import styled from 'styled-components';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { updateNickname } from '../../api/profileApi';
 import { toast } from 'react-toastify';
+import { updateNickname } from '../../api/profileApi';
 import { deleteUser, updatePassword } from '../../api/authApi';
 import { IoLogOutOutline } from 'react-icons/io5';
 

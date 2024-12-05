@@ -1,6 +1,7 @@
+import styled from 'styled-components';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
+
 import { updateProfileImage } from '../../api/profileApi';
 
 const ProfileImageForm = ({ profileImage, setProfileImage }) => {
@@ -28,7 +29,7 @@ const ProfileImageForm = ({ profileImage, setProfileImage }) => {
     [file, setProfileImage]
   );
 
-  // 
+  //
   const userProfileImage = useMemo(() => preview || profileImage, [preview, profileImage]);
 
   return (

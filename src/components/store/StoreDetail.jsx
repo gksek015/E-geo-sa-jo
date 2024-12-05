@@ -1,7 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useAuthStore from '../../zustand/useAuthStore';
-import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const StoreDetail = ({ store }) => {
   const { user } = useAuthStore();
