@@ -15,8 +15,7 @@ const useTopLikeData = () => {
     setLoading(true);
     try {
       // 좋아요 데이터 가져오기
-      const { data, error } = await supabase.from('stores').select('id, name, map_address, likes (id)').limit(10); // 상위 10개만 가져오기
-
+      const { data, error } = await supabase.from('stores').select('id, name, map_address, likes (id)').limit(10);
       if (error) {
         throw error;
       }
@@ -33,7 +32,6 @@ const useTopLikeData = () => {
 
       setTopStores(formattedData);
     } catch (err) {
-      console.error('Top stores 데이터 가져오기 실패: ', err.message);
       setError(err);
     } finally {
       setLoading(false);

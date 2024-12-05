@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import supabase from "../supabase/supabaseClient";
+import { useEffect, useState } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import supabase from '../supabase/supabaseClient';
 
 const PublicRoute = () => {
   const [user, setUser] = useState(null);
@@ -13,13 +13,13 @@ const PublicRoute = () => {
       if (sessionData.session) {
         const { data, error } = await supabase.auth.getUser();
         if (error) {
-          console.error("User retrieval error:", error);
+          console.error('User retrieval error:', error);
           setUser(null);
         } else {
           setUser(data.user);
         }
       } else {
-        setUser(null); 
+        setUser(null);
       }
       setLoading(false);
     };
@@ -28,7 +28,7 @@ const PublicRoute = () => {
   }, []);
 
   if (loading) {
-    return <div>로딩 중...</div>; 
+    return <div>로딩 중...</div>;
   }
 
   return user ? <Navigate to="/home" /> : <Outlet />;

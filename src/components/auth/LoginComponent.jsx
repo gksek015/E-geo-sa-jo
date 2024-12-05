@@ -1,66 +1,66 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { login } from '../../api/authApi';
 
 const LoginComponent = () => {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: ''
   });
 
   const [errors, setErrors] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: ''
   });
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    setFormData({...formData, [name]: value});
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
 
-    if (name === "email") validateEmail(value);
-    if (name === "password") validatePassword(value);
+    if (name === 'email') validateEmail(value);
+    if (name === 'password') validatePassword(value);
   };
 
   const validateEmail = (email) => {
     const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email === "") {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+    if (email === '') {
+      setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
     } else if (!emailValidation.test(email)) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "올바른 이메일 형식이 아닙니다." }));
+      setErrors((prevErrors) => ({ ...prevErrors, email: '올바른 이메일 형식이 아닙니다.' }));
     } else {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+      setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
     }
   };
 
   const validatePassword = (password) => {
-    if (password === "") {
-      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+    if (password === '') {
+      setErrors((prevErrors) => ({ ...prevErrors, password: '' }));
     } else if (password.length < 8) {
-      setErrors((prevErrors) => ({ ...prevErrors, password: "비밀번호는 8자 이상이어야 합니다." }));
+      setErrors((prevErrors) => ({ ...prevErrors, password: '비밀번호는 8자 이상이어야 합니다.' }));
     } else {
-      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+      setErrors((prevErrors) => ({ ...prevErrors, password: '' }));
     }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const {email, password} = formData;
+    const { email, password } = formData;
 
     if (!email || !password || errors.email || errors.password) {
-      toast.error("입력값을 다시 확인해주세요.");
+      toast.error('입력값을 다시 확인해주세요.');
       return;
     }
 
     try {
       const data = await login(email, password);
-      toast.success("로그인 성공!")
-      navigate("/home");
+      toast.success('로그인 성공!');
+      navigate('/home');
     } catch (error) {
-      toast.error("알 수 없는 에러가 발생했습니다. 다시 시도해주세요.")
+      toast.error('알 수 없는 에러가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -76,12 +76,12 @@ const LoginComponent = () => {
         </Logo>
         <Form onSubmit={handleLogin} noValidate>
           <Input
-          type="email"
-          name="email"
-          placeholder="이메일"
-          value={formData.email}
-          onChange={handleChange}
-          autoComplete="off"
+            type="email"
+            name="email"
+            placeholder="이메일"
+            value={formData.email}
+            onChange={handleChange}
+            autoComplete="off"
           />
           {errors.email && <Span>{errors.email}</Span>}
           <Input
@@ -147,7 +147,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 
 const Input = styled.input`
   display: block;
@@ -166,7 +166,6 @@ const Input = styled.input`
 
   &:focus {
     outline: 2px solid var(--font--secondary--color);
-    
   }
 `;
 
@@ -206,8 +205,8 @@ const ButtonGroup = styled.div`
 
 const Span = styled.span`
   font-size: 11px;
-  color: #E74646;
+  color: #e74646;
   display: flex;
   width: 260px;
   margin-bottom: 20px;
-`
+`;

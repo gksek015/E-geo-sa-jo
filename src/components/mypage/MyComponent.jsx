@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { fetchDefaultImageUrl, fetchMyData, deletePost, fetchUserData } from '../../api/myPageApi';
 import { TiDelete } from 'react-icons/ti';
-import {
-  fetchDefaultImageUrl,
-  fetchMyData,
-  deletePost,
-  fetchUserData,
-} from '../../api/myPageApi';
 
 const MyComponent = () => {
   const navigate = useNavigate();
@@ -25,14 +20,14 @@ const MyComponent = () => {
 
     const loadData = async () => {
       try {
-        const user = await fetchUserData(); 
+        const user = await fetchUserData();
         if (!user) {
           console.warn('No authenticated user found.');
           return;
         }
 
-        const userId = user.id; 
-        const fetchedData = await fetchMyData(userId); 
+        const userId = user.id;
+        const fetchedData = await fetchMyData(userId);
         setStores(fetchedData || []);
         setFilteredStores(fetchedData || []);
       } catch (err) {
@@ -151,7 +146,7 @@ const CategorySelector = styled.select`
   background-color: var(--button--color);
   cursor: pointer;
 
-&:hover {
+  &:hover {
     border-color: #888;
   }
 `;
@@ -192,7 +187,7 @@ const DeleteButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #B47B46;
+  color: #b47b46;
 
   &:hover {
     color: #d32f2f;

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router-dom';
 import { logout, signup } from '../../api/authApi';
 
 const SignupComponent = () => {
@@ -22,34 +22,34 @@ const SignupComponent = () => {
   const navigate = useNavigate();
 
   const validateField = (name, value) => {
-    let error = "";
+    let error = '';
     switch (name) {
-      case "email":
+      case 'email':
         if (!value) {
-          error = "";
+          error = '';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          error = "올바른 이메일 주소를 입력해주세요.";
+          error = '올바른 이메일 주소를 입력해주세요.';
         }
         break;
-      case "password":
+      case 'password':
         if (!value) {
-          error = "";
+          error = '';
         } else if (value.length < 8) {
-          error = "비밀번호는 최소 8자 이상이어야 합니다.";
+          error = '비밀번호는 최소 8자 이상이어야 합니다.';
         }
         break;
-      case "confirmPassword":
+      case 'confirmPassword':
         if (!value) {
-          error = "";
+          error = '';
         } else if (value !== formData.password) {
-          error = "비밀번호가 일치하지 않습니다.";
+          error = '비밀번호가 일치하지 않습니다.';
         }
         break;
-      case "nickname":
+      case 'nickname':
         if (!value.trim()) {
-          error = "";
-        } else if (value.trim() === "") {
-          error = "닉네임을 입력해주세요.";
+          error = '';
+        } else if (value.trim() === '') {
+          error = '닉네임을 입력해주세요.';
         }
         break;
       default:
@@ -71,10 +71,11 @@ const SignupComponent = () => {
 
     const { email, password, confirmPassword, nickname } = formData;
 
-    const isFormValid = Object.values(errors).every((error) => error === '') && email && password && confirmPassword && nickname;
+    const isFormValid =
+      Object.values(errors).every((error) => error === '') && email && password && confirmPassword && nickname;
 
     if (!isFormValid) {
-      toast.error("모든 필드를 채워주세요.");
+      toast.error('모든 필드를 채워주세요.');
       return;
     }
 
@@ -125,13 +126,7 @@ const SignupComponent = () => {
             onChange={handleChange}
           />
           {errors.confirmPassword && <Span>{errors.confirmPassword}</Span>}
-          <Input
-            type="text"
-            name="nickname"
-            placeholder="닉네임"
-            value={formData.nickname}
-            onChange={handleChange}
-          />
+          <Input type="text" name="nickname" placeholder="닉네임" value={formData.nickname} onChange={handleChange} />
           {errors.nickname && <Span>{errors.nickname}</Span>}
           <ButtonGroup>
             <LinkButton to="/">뒤로가기</LinkButton>
@@ -188,7 +183,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 
 const Input = styled.input`
   display: block;
@@ -207,7 +202,6 @@ const Input = styled.input`
 
   &:focus {
     outline: 2px solid var(--font--secondary--color);
-    
   }
 `;
 
@@ -245,11 +239,10 @@ const ButtonGroup = styled.div`
   gap: 35px;
 `;
 
-
 const Span = styled.span`
   font-size: 11px;
-  color: #E74646;
+  color: #e74646;
   display: flex;
   width: 260px;
   margin-bottom: 20px;
-`
+`;

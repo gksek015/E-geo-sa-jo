@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+
 import ProfileImageForm from '../components/myProfile/ProfileImageForm';
 import ProfileDataForm from '../components/myProfile/ProfileDataForm';
+
+import { useState, useEffect } from 'react';
+
 import { fetchDefaultImage, fetchUserProfile } from '../api/profileApi';
 
 const MyProfilePage = () => {
