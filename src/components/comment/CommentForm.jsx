@@ -14,7 +14,9 @@ function CommentForm() {
   const handleAddComment = (e) => {
     e.preventDefault();
     setCommentContent(inputRef.current.value);
+
     addComment(user.id, id);
+    inputRef.current.value = ''; // input 초기화
   };
 
   return (

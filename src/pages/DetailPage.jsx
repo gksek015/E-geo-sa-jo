@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import CommentForm from '../components/comment/commentForm';
+import CommentForm from '../components/comment/CommentForm';
 import CommentList from '../components/comment/CommentList';
 import StoreInfo from '../components/store/StoreInfo';
 import InteractionComponent from '../components/comment/InteractionComponent';
